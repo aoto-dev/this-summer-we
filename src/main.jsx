@@ -283,19 +283,21 @@ function HomeScreen({ isDrawing, isFading, drawCard, goAdd, openHistory, goHome,
   return (
     <section className={`home-screen ${isFading ? "fade-out" : ""}`} aria-label="ホーム">
       <button className="card-top-button card-back-button" onClick={openHowTo} aria-label="遊び方">
-        <CircleHelp size={30} strokeWidth={2.7} />
+        <CircleHelp size={30} strokeWidth={2.1} />
       </button>
       <button className="card-top-button card-history-button" onClick={openHistory} aria-label="履歴を見る">
-        <History size={30} strokeWidth={2.7} />
+        <History size={30} strokeWidth={2.1} />
       </button>
       <div className="home-actions">
         <button className="home-main-button draw-button pressable" aria-label="カードを引く" onClick={drawCard} disabled={isDrawing}>
           <IconCards className="button-icon" size={34} stroke={2.2} aria-hidden="true" />
-          カードを引く
+          <span>カードを引く</span>
+          <ChevronRight className="home-button-chevron" size={25} strokeWidth={2.7} aria-hidden="true" />
         </button>
         <button className="home-main-button add-button pressable" aria-label="カードを追加" onClick={goAdd}>
-          <Plus size={30} strokeWidth={3} />
-          カードを追加
+          <Plus className="add-plus-icon" size={30} strokeWidth={3} />
+          <span>カードを追加</span>
+          <ChevronRight className="home-button-chevron" size={25} strokeWidth={2.7} aria-hidden="true" />
         </button>
       </div>
     </section>
@@ -368,7 +370,7 @@ function CardScreen({
         <ChevronLeft size={42} strokeWidth={3.2} />
       </button>
       <button className="card-top-button card-history-button" onClick={openHistory} aria-label="履歴を見る">
-        <History size={34} strokeWidth={2.7} />
+        <History size={34} strokeWidth={2.1} />
       </button>
 
       <button className="picker-arrow picker-arrow-left" onClick={() => moveCard(-1)} aria-label="前のカード">
