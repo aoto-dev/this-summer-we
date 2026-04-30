@@ -734,7 +734,7 @@ button:active:not(:disabled) {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
   padding: max(18px, env(safe-area-inset-top)) 24px 18px;
   background-image: url("/背景画像４.png");
   background-size: cover;
@@ -749,7 +749,7 @@ button:active:not(:disabled) {
 .add-shell .top-bar {
   justify-content: flex-start;
   flex-shrink: 0;
-  padding: 8px 0 48px;
+  padding: 4px 0 24px;
 }
 
 .add-shell .top-bar button {
@@ -808,7 +808,7 @@ button:active:not(:disabled) {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 4px 2px 18px;
+  padding: 0 2px 18px;
 }
 
 .added-card-scroll {
@@ -866,7 +866,7 @@ button:active:not(:disabled) {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin: 8px 2px 12px;
+  margin: 2px 2px 10px;
   color: #126cc8;
 }
 
