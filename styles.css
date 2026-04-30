@@ -3,6 +3,8 @@
 :root {
   color: #062b60;
   font-family: "Zen Maru Gothic", system-ui, sans-serif;
+  --app-bg: url("/背景画像２.png");
+  --app-height: 100dvh;
   background: #c8f1ff;
   -webkit-font-smoothing: antialiased;
 }
@@ -17,17 +19,26 @@ body {
   padding: 0;
   min-width: 320px;
   width: 100%;
-  height: 100dvh;
-  min-height: 100dvh;
+  height: var(--app-height);
+  min-height: var(--app-height);
   overflow: hidden;
-  background: #c8f1ff;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
 #root {
   width: 100%;
-  height: 100dvh;
-  min-height: 100dvh;
+  height: var(--app-height);
+  min-height: var(--app-height);
   overflow: hidden;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
 button,
@@ -52,12 +63,12 @@ button:active:not(:disabled) {
   position: fixed;
   inset: 0;
   width: 100vw;
-  height: auto;
-  min-height: 100dvh;
+  height: var(--app-height);
+  min-height: var(--app-height);
   margin: 0;
   padding: 0;
   background-color: #c8f1ff;
-  background-image: url("/背景画像２.png");
+  background-image: var(--app-bg);
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
@@ -147,7 +158,7 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  top: 88.1%;
+  bottom: max(10px, env(safe-area-inset-bottom));
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -669,7 +680,7 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  top: 88.15%;
+  bottom: max(10px, env(safe-area-inset-bottom));
   width: auto;
   margin-top: 0;
   align-items: flex-start;
