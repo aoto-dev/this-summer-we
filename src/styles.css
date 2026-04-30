@@ -104,9 +104,30 @@ button:active:not(:disabled) {
   background-repeat: no-repeat;
 }
 
+.app-bg-layer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: -1px;
+  bottom: -220px;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  transform: translateZ(0);
+}
+
 .app > * {
   position: relative;
   z-index: 1;
+}
+
+.app > .app-bg-layer {
+  position: fixed;
+  z-index: 0;
 }
 
 .app:has(.card-shell) {

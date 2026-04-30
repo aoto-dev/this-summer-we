@@ -209,6 +209,7 @@ function App() {
 
   return (
     <main className="app">
+      <div className="app-bg-layer" aria-hidden="true" />
       {screen === "home" && (
         <HomeScreen
           isDrawing={isDrawing}
@@ -499,7 +500,7 @@ function AddScreen({ cards, addCard, updateCard, deleteCard, goHome }) {
 
       <section className="added-card-section">
         <div className="added-card-heading">
-          <h2><IconCards size={28} stroke={1.9} />カード一覧</h2>
+          <h2><IconCards size={28} stroke={1.9} />カード一覧い</h2>
         </div>
         <div className="added-card-scroll">
           {cards.length === 0 ? (
