@@ -564,7 +564,10 @@ async function translate(ja) {
 function TopBar({ goHome }) {
   return (
     <header className="top-bar">
-      <button onClick={goHome}>この夏、私たちは、</button>
+      <button onClick={goHome} aria-label="戻る">
+        <ChevronLeft className="top-back-icon" size={30} strokeWidth={3.2} aria-hidden="true" />
+        <span>この夏、私たちは、</span>
+      </button>
     </header>
   );
 }

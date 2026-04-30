@@ -266,6 +266,10 @@ button:active:not(:disabled) {
   letter-spacing: 1px;
 }
 
+.top-back-icon {
+  display: none;
+}
+
 .card-shell {
   align-items: center;
   padding: 0;
@@ -753,6 +757,27 @@ button:active:not(:disabled) {
   line-height: 1.3;
 }
 
+.home-actions,
+.card-action-stack {
+  left: 14.1%;
+  right: 14.1%;
+  top: 73.1%;
+  gap: 1.75dvh;
+}
+
+.home-main-button,
+.card-action-stack .primary-button,
+.card-action-stack .execute-button {
+  width: 100%;
+  min-height: 6.85dvh;
+  padding: 13px 28px;
+  border-radius: 999px;
+  font-size: clamp(18px, 5vw, 20px);
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  line-height: 1.3;
+}
+
 .card-shell .bottom-nav {
   position: absolute;
   left: 8.8%;
@@ -786,7 +811,7 @@ button:active:not(:disabled) {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: max(18px, env(safe-area-inset-top)) 24px 18px;
+  padding: max(18px, env(safe-area-inset-top)) 24px 0;
   background-image: url("/背景画像４.png");
   background-size: cover;
   background-position: center top;
@@ -800,7 +825,7 @@ button:active:not(:disabled) {
 .add-shell .top-bar {
   justify-content: flex-start;
   flex-shrink: 0;
-  padding: 4px 0 24px;
+  padding: 8px 0 20px;
 }
 
 .add-shell .top-bar button {
@@ -809,22 +834,19 @@ button:active:not(:disabled) {
   overflow: hidden;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.96);
-  color: transparent;
+  color: #1479d8;
   box-shadow: 0 8px 18px rgba(32, 90, 124, 0.18);
   position: relative;
+  display: grid;
+  place-items: center;
 }
 
-.add-shell .top-bar button::before {
-  position: absolute;
-  left: 21px;
-  top: 16px;
-  width: 15px;
-  height: 15px;
-  border-left: 5px solid #1473d2;
-  border-bottom: 5px solid #1473d2;
-  border-radius: 2px;
-  content: "";
-  transform: rotate(45deg);
+.add-shell .top-bar button span {
+  display: none;
+}
+
+.add-shell .top-back-icon {
+  display: block;
 }
 
 .add-shell .top-bar button:active {
@@ -859,19 +881,32 @@ button:active:not(:disabled) {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 0 2px 18px;
+  padding: 0 2px 0;
 }
 
 .added-card-scroll {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 0 18px;
-  scrollbar-width: none;
+  padding: 0 0 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(18, 108, 200, 0.45) rgba(255, 255, 255, 0.28);
+  overscroll-behavior: contain;
 }
 
 .added-card-scroll::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+}
+
+.added-card-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 9999px;
+}
+
+.added-card-scroll::-webkit-scrollbar-thumb {
+  background: rgba(18, 108, 200, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 9999px;
 }
 
 .panel h1,
@@ -1061,6 +1096,7 @@ button:active:not(:disabled) {
 
 .add-shell .custom-list {
   gap: 14px;
+  padding-bottom: 12px;
 }
 
 .add-shell .custom-list li {
