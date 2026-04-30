@@ -115,23 +115,6 @@ function App() {
   }, [screen]);
 
   useEffect(() => {
-    const setAppHeight = () => {
-      const viewportHeight = window.visualViewport?.height ?? 0;
-      const height = Math.max(window.innerHeight, viewportHeight);
-      document.documentElement.style.setProperty("--app-height", `${height}px`);
-    };
-
-    setAppHeight();
-    window.addEventListener("resize", setAppHeight);
-    window.visualViewport?.addEventListener("resize", setAppHeight);
-
-    return () => {
-      window.removeEventListener("resize", setAppHeight);
-      window.visualViewport?.removeEventListener("resize", setAppHeight);
-    };
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ currentId, currentCardIndex, isFlipped, cards, history }));
   }, [currentId, currentCardIndex, isFlipped, cards, history]);
 

@@ -4,7 +4,7 @@
   color: #062b60;
   font-family: "Zen Maru Gothic", system-ui, sans-serif;
   --app-bg: url("/背景画像２.png");
-  --app-height: 100dvh;
+  --app-height: 100svh;
   background-color: #c8f1ff;
   background-image: var(--app-bg);
   background-size: cover;
@@ -23,8 +23,10 @@ body {
   padding: 0;
   min-width: 320px;
   width: 100%;
-  height: var(--app-height);
-  min-height: var(--app-height);
+  height: 100%;
+  min-height: 100%;
+  position: fixed;
+  inset: 0;
   overflow: hidden;
   background-color: #c8f1ff;
   background-image: var(--app-bg);
@@ -35,8 +37,8 @@ body {
 
 #root {
   width: 100%;
-  height: var(--app-height);
-  min-height: var(--app-height);
+  height: 100%;
+  min-height: 100%;
   overflow: hidden;
   background-color: #c8f1ff;
   background-image: var(--app-bg);
@@ -67,7 +69,9 @@ button:active:not(:disabled) {
   position: fixed;
   inset: 0;
   width: 100vw;
+  height: 100vh;
   height: var(--app-height);
+  min-height: 100vh;
   min-height: var(--app-height);
   margin: 0;
   padding: 0;
@@ -162,7 +166,8 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  bottom: max(10px, env(safe-area-inset-bottom));
+  bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -623,6 +628,7 @@ button:active:not(:disabled) {
   z-index: 2;
   width: 100%;
   margin-top: auto;
+  padding-bottom: env(safe-area-inset-bottom);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -684,9 +690,10 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  bottom: max(10px, env(safe-area-inset-bottom));
+  bottom: 0;
   width: auto;
   margin-top: 0;
+  padding-bottom: env(safe-area-inset-bottom);
   align-items: flex-start;
 }
 
@@ -727,7 +734,7 @@ button:active:not(:disabled) {
 .add-shell .top-bar {
   justify-content: flex-start;
   flex-shrink: 0;
-  padding: 8px 0 72px;
+  padding: 8px 0 48px;
 }
 
 .add-shell .top-bar button {
@@ -844,7 +851,7 @@ button:active:not(:disabled) {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin: 12px 2px 14px;
+  margin: 8px 2px 12px;
   color: #126cc8;
 }
 
