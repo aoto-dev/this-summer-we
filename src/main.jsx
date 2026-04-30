@@ -372,6 +372,12 @@ function CardScreen({
   return (
     <section className="screen-shell card-shell picker-shell">
       <TopBar goHome={goHome} />
+      <button className="card-top-button card-back-button" onClick={goHome} aria-label="ホームに戻る">
+        <ChevronLeft size={42} strokeWidth={3.2} />
+      </button>
+      <button className="card-top-button card-history-button" onClick={openHistory} aria-label="履歴を見る">
+        <History size={34} strokeWidth={2.7} />
+      </button>
 
       <button className="picker-arrow picker-arrow-left" onClick={() => moveCard(-1)} aria-label="前のカード">
         <ChevronLeft size={38} strokeWidth={3.2} />
@@ -434,7 +440,6 @@ function CardScreen({
           実行する！
         </button>
       </div>
-      <BottomNav openHistory={openHistory} goHome={goHome} openHowTo={openHowTo} />
     </section>
   );
 }

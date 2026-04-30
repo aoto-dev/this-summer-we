@@ -260,6 +260,32 @@ button:active:not(:disabled) {
   display: none;
 }
 
+.card-top-button {
+  position: absolute;
+  top: max(52px, env(safe-area-inset-top));
+  z-index: 5;
+  width: min(16.5vw, 72px);
+  height: min(16.5vw, 72px);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1479d8;
+  box-shadow: 0 8px 18px rgba(32, 90, 124, 0.18);
+}
+
+.card-back-button {
+  left: 6.2%;
+}
+
+.card-history-button {
+  right: 6.2%;
+}
+
+.card-top-button:active:not(:disabled) {
+  box-shadow: 0 4px 10px rgba(32, 90, 124, 0.14);
+}
+
 .big-card {
   position: relative;
   z-index: 1;
