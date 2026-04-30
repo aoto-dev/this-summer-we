@@ -181,7 +181,7 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  bottom: 0;
+  bottom: -10px;
   padding-bottom: env(safe-area-inset-bottom);
   display: flex;
   align-items: flex-start;
@@ -195,14 +195,14 @@ button:active:not(:disabled) {
   display: grid;
   justify-items: center;
   gap: 8px;
-  font-size: clamp(12px, 3.6vw, 15px);
+  font-size: clamp(11px, 3.25vw, 14px);
   font-weight: 900;
   letter-spacing: 1px;
 }
 
 .home-bottom-nav span {
-  width: min(18vw, 76px);
-  height: min(18vw, 76px);
+  width: min(16.4vw, 68px);
+  height: min(16.4vw, 68px);
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -662,8 +662,8 @@ button:active:not(:disabled) {
 }
 
 .bottom-nav span {
-  width: 66px;
-  height: 66px;
+  width: 60px;
+  height: 60px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -705,7 +705,7 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  bottom: 0;
+  bottom: -10px;
   width: auto;
   margin-top: 0;
   padding-bottom: env(safe-area-inset-bottom);
@@ -713,12 +713,12 @@ button:active:not(:disabled) {
 }
 
 .card-shell .bottom-nav button {
-  font-size: clamp(12px, 3.6vw, 15px);
+  font-size: clamp(11px, 3.25vw, 14px);
 }
 
 .card-shell .bottom-nav span {
-  width: min(18vw, 76px);
-  height: min(18vw, 76px);
+  width: min(16.4vw, 68px);
+  height: min(16.4vw, 68px);
   background: rgba(255, 255, 255, 0.96);
 }
 
@@ -1289,12 +1289,12 @@ button:active:not(:disabled) {
   }
 
   .bottom-nav span {
-    width: 58px;
-    height: 58px;
+    width: 54px;
+    height: 54px;
   }
 
   .bottom-nav button {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .card-shell .big-card {
@@ -1321,8 +1321,8 @@ button:active:not(:disabled) {
   }
 
   .card-shell .bottom-nav span {
-    width: min(18vw, 76px);
-    height: min(18vw, 76px);
+    width: min(16.4vw, 68px);
+    height: min(16.4vw, 68px);
   }
 }
 
