@@ -262,10 +262,10 @@ button:active:not(:disabled) {
 
 .card-top-button {
   position: absolute;
-  top: max(52px, env(safe-area-inset-top));
+  top: max(26px, env(safe-area-inset-top));
   z-index: 5;
-  width: min(16.5vw, 72px);
-  height: min(16.5vw, 72px);
+  width: 52px;
+  height: 52px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -275,15 +275,20 @@ button:active:not(:disabled) {
 }
 
 .card-back-button {
-  left: 6.2%;
+  left: 24px;
 }
 
 .card-history-button {
-  right: 6.2%;
+  right: 24px;
 }
 
 .card-top-button:active:not(:disabled) {
   box-shadow: 0 4px 10px rgba(32, 90, 124, 0.14);
+}
+
+.card-top-button svg {
+  width: 30px;
+  height: 30px;
 }
 
 .big-card {
