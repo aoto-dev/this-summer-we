@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import TinderCard from "react-tinder-card";
 import { Check, ChevronLeft, ChevronRight, CircleHelp, History, House, Pencil, Plus, Trash2, X } from "lucide-react";
 import { IconCards } from "@tabler/icons-react";
 import "./styles.css";
@@ -185,11 +186,17 @@ function App() {
 
   const executeCard = () => {
     if (!currentCard || !isFlipped) return;
-    const executedAt = new Date().toLocaleDateString("sv-SE");
+    const now = new Date();
+    const executedAt = now.toLocaleDateString("sv-SE");
+    const executedAtLabel = `${executedAt.replaceAll("-", "/")} ${now.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}`;
     setHistory((items) => [
-      { id: currentCard.id, ja: currentCard.ja, en: currentCard.en, executedAt },
+      { historyId: crypto.randomUUID(), id: currentCard.id, ja: currentCard.ja, en: currentCard.en, executedAt, executedAtLabel },
       ...items
     ].slice(0, 50));
+  };
+
+  const deleteHistoryItem = (targetIndex) => {
+    setHistory((items) => items.filter((_, index) => index !== targetIndex));
   };
 
   const reset = () => {
@@ -232,7 +239,7 @@ function App() {
           isFading={homeFading}
           drawCard={drawCard}
           goAdd={() => setScreen("add")}
-          openHistory={() => setModal("history")}
+          openHistory={() => setScreen("history")}
           openHowTo={() => setModal("howto")}
           goHome={() => setScreen("home")}
         />
@@ -250,7 +257,7 @@ function App() {
           redrawCard={redrawCard}
           executeCard={executeCard}
           goHome={() => setScreen("home")}
-          openHistory={() => setModal("history")}
+          openHistory={() => setScreen("history")}
           openHowTo={() => setModal("howto")}
         />
       )}
@@ -265,9 +272,17 @@ function App() {
         />
       )}
 
+      {screen === "history" && (
+        <HistoryScreen
+          history={history}
+          goHome={() => setScreen("home")}
+          clearHistory={() => setHistory([])}
+          deleteHistoryItem={deleteHistoryItem}
+        />
+      )}
+
       {modal && (
         <Modal title={modalTitle(modal)} close={() => setModal(null)}>
-          {modal === "history" && <HistoryList history={history} />}
           {modal === "howto" && <HowTo />}
         </Modal>
       )}
@@ -276,7 +291,7 @@ function App() {
 }
 
 function modalTitle(modal) {
-  return { history: "履歴", howto: "遊び方" }[modal];
+  return { howto: "遊び方" }[modal];
 }
 
 function HomeScreen({ isDrawing, isFading, drawCard, goAdd, openHistory, goHome, openHowTo }) {
@@ -319,12 +334,10 @@ function CardScreen({
   openHowTo
 }) {
   const [slideDirection, setSlideDirection] = useState("");
-  const [dragX, setDragX] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isSwipingOut, setIsSwipingOut] = useState(false);
-  const dragStartX = useRef(0);
-  const dragXRef = useRef(0);
-  const hasDragged = useRef(false);
+  const [isPromotingStack, setIsPromotingStack] = useState(false);
+  const tapStartRef = useRef(null);
+  const pendingSwipeRef = useRef(0);
+  const swipeTimerRef = useRef(null);
 
   if (!card) {
     return (
@@ -346,70 +359,59 @@ function CardScreen({
   ].filter(Boolean).join(" ");
 
   const flipCurrentCard = () => {
-    if (hasDragged.current) {
-      hasDragged.current = false;
-      return;
-    }
     if (!isFlipped) flipCard();
+  };
+
+  const startCardTap = (x, y) => {
+    tapStartRef.current = { x, y, time: Date.now() };
+  };
+
+  const finishCardTap = (x, y) => {
+    const start = tapStartRef.current;
+    tapStartRef.current = null;
+    if (!start || isFlipped) return;
+
+    const movedX = Math.abs(x - start.x);
+    const movedY = Math.abs(y - start.y);
+    const elapsed = Date.now() - start.time;
+    if (movedX < 14 && movedY < 14 && elapsed < 600) {
+      flipCard();
+    }
   };
 
   const moveCard = (direction) => {
     if (cards.length < 2) return;
+    pendingSwipeRef.current = 0;
+    setIsPromotingStack(true);
     setSlideDirection(direction > 0 ? "slide-next" : "slide-prev");
-    setDragX(0);
     selectCardIndex(currentCardIndex + direction);
-    window.setTimeout(() => setSlideDirection(""), 260);
+    window.setTimeout(() => {
+      setSlideDirection("");
+      setIsPromotingStack(false);
+    }, 220);
   };
 
-  const handlePointerDown = (event) => {
-    dragStartX.current = event.clientX;
-    hasDragged.current = false;
-    setIsDragging(true);
-    setSlideDirection("");
-    event.currentTarget.setPointerCapture?.(event.pointerId);
-  };
-
-  const handlePointerMove = (event) => {
-    if (!isDragging || isSwipingOut) return;
-    const nextX = event.clientX - dragStartX.current;
-    if (Math.abs(nextX) > 6) {
-      hasDragged.current = true;
+  const swipeCard = (direction) => {
+    if (direction === "left") {
+      pendingSwipeRef.current = 1;
     }
-    const clampedX = Math.max(-150, Math.min(150, nextX));
-    dragXRef.current = clampedX;
-    setDragX(clampedX);
-  };
-
-  const handlePointerUp = (event) => {
-    if (!isDragging) return;
-    event.currentTarget.releasePointerCapture?.(event.pointerId);
-    setIsDragging(false);
-
-    const threshold = 96;
-    const releasedX = dragXRef.current;
-    if (cards.length > 1 && Math.abs(releasedX) >= threshold) {
-      const direction = releasedX > 0 ? -1 : 1;
-      setIsSwipingOut(true);
-      setDragX(direction > 0 ? -460 : 460);
-      window.setTimeout(() => {
-        selectCardIndex(currentCardIndex + direction);
-        dragXRef.current = 0;
-        setDragX(0);
-        setIsSwipingOut(false);
-        setSlideDirection(direction > 0 ? "slide-next" : "slide-prev");
-        window.setTimeout(() => setSlideDirection(""), 260);
-      }, 190);
-      return;
+    if (direction === "right") {
+      pendingSwipeRef.current = -1;
     }
 
-    dragXRef.current = 0;
-    setDragX(0);
-  };
+    const swipeDirection = pendingSwipeRef.current;
+    if (!swipeDirection) return;
 
-  const cardDragStyle = {
-    transform: `translateX(${dragX}px) rotate(${dragX / 18}deg)`,
-    opacity: isSwipingOut ? 0.18 : 1,
-    transition: isDragging ? "none" : "transform 0.24s ease, opacity 0.18s ease"
+    if (swipeTimerRef.current) {
+      window.clearTimeout(swipeTimerRef.current);
+    }
+
+    swipeTimerRef.current = window.setTimeout(() => {
+      pendingSwipeRef.current = 0;
+      setIsPromotingStack(true);
+      selectCardIndex(currentCardIndex + swipeDirection);
+      window.setTimeout(() => setIsPromotingStack(false), 180);
+    }, 70);
   };
 
   return (
@@ -422,59 +424,63 @@ function CardScreen({
         <History size={34} strokeWidth={2.1} />
       </button>
 
-      <button className="picker-arrow picker-arrow-left" onClick={() => moveCard(-1)} aria-label="前のカード">
-        <ChevronLeft size={38} strokeWidth={3.2} />
-      </button>
-      <button className="picker-arrow picker-arrow-right" onClick={() => moveCard(1)} aria-label="次のカード">
-        <ChevronRight size={38} strokeWidth={3.2} />
-      </button>
+      {!isFlipped && !isPromotingStack && <div className="stack-card-shadow" aria-hidden="true" />}
 
-      <div
-        className={`flip-card ${isFlipped ? "is-flipped" : ""} ${slideDirection}`}
-        role="button"
-        tabIndex={0}
-        aria-label={isFlipped ? "選ばれたお題カード" : "タップでカードをめくる"}
-        onClick={flipCurrentCard}
-        onKeyDown={(event) => {
-          if ((event.key === "Enter" || event.key === " ") && !isFlipped) {
-            event.preventDefault();
-            flipCard();
-          }
-        }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-        style={dragX || isDragging || isSwipingOut ? cardDragStyle : undefined}
+      <TinderCard
+        key={card.id}
+        className={`tinder-card-wrapper ${slideDirection} ${isPromotingStack ? "promote-from-stack" : ""}`}
+        onSwipe={swipeCard}
+        preventSwipe={["up", "down"]}
+        swipeRequirementType="position"
+        swipeThreshold={130}
+        flickOnSwipe
       >
-        <div className="flip-card-inner">
-          <section className="card-back-face">
-            <span className="back-motif back-motif-birds">⌒⌒</span>
-            <span className="back-motif back-motif-ring" />
-            <span className="back-motif back-motif-firework" />
-            <span className="back-motif back-motif-bottle" />
-            <strong>タップでめくる</strong>
-          </section>
+        <div
+          className={`flip-card pressable ${isFlipped ? "is-flipped" : ""}`}
+          role="button"
+          tabIndex={0}
+          aria-label={isFlipped ? "選ばれたお題カード" : "タップでカードをめくる"}
+          onPointerDown={(event) => startCardTap(event.clientX, event.clientY)}
+          onPointerUp={(event) => finishCardTap(event.clientX, event.clientY)}
+          onTouchStartCapture={(event) => {
+            const touch = event.touches[0];
+            if (touch) startCardTap(touch.clientX, touch.clientY);
+          }}
+          onTouchEndCapture={(event) => {
+            const touch = event.changedTouches[0];
+            if (touch) finishCardTap(touch.clientX, touch.clientY);
+          }}
+          onClick={flipCurrentCard}
+          onKeyDown={(event) => {
+            if ((event.key === "Enter" || event.key === " ") && !isFlipped) {
+              event.preventDefault();
+              flipCard();
+            }
+          }}
+        >
+          <div className="flip-card-inner">
+            <section className="card-back-face pressable" aria-hidden="true" />
 
-          <section key={card.id} className={`big-card card-front-face ${densityClass} ${isDrawing ? "leaving" : ""}`}>
-            <svg className="card-accent" viewBox="0 0 60 45" aria-hidden="true">
-              <line x1="8" y1="30" x2="22" y2="34" />
-              <line x1="22" y1="14" x2="28" y2="26" />
-              <line x1="42" y1="6" x2="43" y2="20" />
-            </svg>
-            <div className="card-ja-area">
-              <h1 className="jaText">
-                {jaLines.map((line) => (
-                  <span key={line}>{line}</span>
-                ))}
-              </h1>
-            </div>
-            <div className="card-en-area">
-              <p className="enText">{card.en}</p>
-            </div>
-          </section>
+            <section key={card.id} className={`big-card card-front-face pressable ${densityClass} ${isDrawing ? "leaving" : ""}`}>
+              <svg className="card-accent" viewBox="0 0 60 45" aria-hidden="true">
+                <line x1="8" y1="30" x2="22" y2="34" />
+                <line x1="22" y1="14" x2="28" y2="26" />
+                <line x1="42" y1="6" x2="43" y2="20" />
+              </svg>
+              <div className="card-ja-area">
+                <h1 className="jaText">
+                  {jaLines.map((line) => (
+                    <span key={line}>{line}</span>
+                  ))}
+                </h1>
+              </div>
+              <div className="card-en-area">
+                <p className="enText">{card.en}</p>
+              </div>
+            </section>
+          </div>
         </div>
-      </div>
+      </TinderCard>
 
       <div className="card-action-stack">
         <button className="primary-button" onClick={redrawCard} disabled={isDrawing}>
@@ -640,6 +646,100 @@ function BottomNav({ openHistory, goHome, openHowTo }) {
         遊び方
       </button>
     </nav>
+  );
+}
+
+function HistoryScreen({ history, goHome, clearHistory, deleteHistoryItem }) {
+  return (
+    <section className="history-screen" aria-label="履歴">
+      <button className="card-top-button history-back-button" onClick={goHome} aria-label="ホームに戻る">
+        <ChevronLeft size={42} strokeWidth={3.2} />
+      </button>
+
+      <div className="history-panel">
+        {history.length ? (
+          <ul className="history-card-list">
+            {history.map((item, index) => (
+              <HistoryRow
+                key={item.historyId ?? `${item.id}-${item.executedAtLabel ?? item.executedAt ?? index}`}
+                item={item}
+                onDelete={() => deleteHistoryItem(index)}
+              />
+            ))}
+          </ul>
+        ) : (
+          <p className="history-empty">まだ履歴はありません。</p>
+        )}
+      </div>
+
+      {!!history.length && (
+        <button className="history-clear-button" onClick={clearHistory} aria-label="履歴をすべて削除" />
+      )}
+    </section>
+  );
+}
+
+function HistoryRow({ item, onDelete }) {
+  const [offset, setOffset] = useState(0);
+  const swipeRef = useRef(null);
+  const revealWidth = 82;
+
+  const startSwipe = (event) => {
+    swipeRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      startOffset: offset,
+      locked: null
+    };
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  };
+
+  const moveSwipe = (event) => {
+    const swipe = swipeRef.current;
+    if (!swipe) return;
+
+    const dx = event.clientX - swipe.x;
+    const dy = event.clientY - swipe.y;
+    if (!swipe.locked && Math.max(Math.abs(dx), Math.abs(dy)) > 8) {
+      swipe.locked = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+    }
+    if (swipe.locked !== "x") return;
+
+    const nextOffset = Math.min(0, Math.max(-revealWidth, swipe.startOffset + dx));
+    setOffset(nextOffset);
+  };
+
+  const endSwipe = () => {
+    if (!swipeRef.current) return;
+    swipeRef.current = null;
+    setOffset((value) => (Math.abs(value) > revealWidth * 0.45 ? -revealWidth : 0));
+  };
+
+  return (
+    <li className={`history-row ${offset > 0 ? "is-revealed" : ""}`}>
+      <button className="history-delete-action" onClick={onDelete} aria-label={`${item.ja}を履歴から削除`}>
+        <Trash2 size={24} strokeWidth={2.4} />
+        削除
+      </button>
+      <div
+        className="history-row-card"
+        style={{ transform: `translateX(${offset}px)` }}
+        onPointerDown={startSwipe}
+        onPointerMove={moveSwipe}
+        onPointerUp={endSwipe}
+        onPointerCancel={endSwipe}
+      >
+        <div className="history-thumb" aria-hidden="true">
+          <strong>{item.ja}</strong>
+          <span>{item.en}</span>
+        </div>
+        <div className="history-copy">
+          <strong>{item.ja}</strong>
+          <time>{item.executedAtLabel ?? item.executedAt?.replaceAll("-", "/")}</time>
+        </div>
+        <ChevronRight className="history-row-icon" size={26} strokeWidth={2.4} aria-hidden="true" />
+      </div>
+    </li>
   );
 }
 

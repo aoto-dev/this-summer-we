@@ -5,6 +5,9 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
+    optimizeDeps: {
+      include: ["@react-spring/web", "react-tinder-card"]
+    },
     plugins: [
       react(),
       {
