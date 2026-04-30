@@ -445,6 +445,10 @@ button:active:not(:disabled) {
   transform-origin: center center;
   animation: cardAppear 0.34s ease-out both;
   cursor: pointer;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform, opacity;
 }
 
 .flip-card.slide-next {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Check, ChevronLeft, ChevronRight, CircleHelp, History, House, Pencil, Plus, Trash2, X } from "lucide-react";
 import { IconCards } from "@tabler/icons-react";
@@ -318,8 +318,13 @@ function CardScreen({
   openHistory,
   openHowTo
 }) {
-  const [touchStartX, setTouchStartX] = useState(null);
   const [slideDirection, setSlideDirection] = useState("");
+  const [dragX, setDragX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isSwipingOut, setIsSwipingOut] = useState(false);
+  const dragStartX = useRef(0);
+  const dragXRef = useRef(0);
+  const hasDragged = useRef(false);
 
   if (!card) {
     return (
@@ -341,26 +346,70 @@ function CardScreen({
   ].filter(Boolean).join(" ");
 
   const flipCurrentCard = () => {
+    if (hasDragged.current) {
+      hasDragged.current = false;
+      return;
+    }
     if (!isFlipped) flipCard();
   };
 
   const moveCard = (direction) => {
     if (cards.length < 2) return;
     setSlideDirection(direction > 0 ? "slide-next" : "slide-prev");
+    setDragX(0);
     selectCardIndex(currentCardIndex + direction);
     window.setTimeout(() => setSlideDirection(""), 260);
   };
 
-  const handleTouchEnd = (event) => {
-    if (touchStartX === null || cards.length < 2 || isFlipped) {
-      setTouchStartX(null);
+  const handlePointerDown = (event) => {
+    dragStartX.current = event.clientX;
+    hasDragged.current = false;
+    setIsDragging(true);
+    setSlideDirection("");
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  };
+
+  const handlePointerMove = (event) => {
+    if (!isDragging || isSwipingOut) return;
+    const nextX = event.clientX - dragStartX.current;
+    if (Math.abs(nextX) > 6) {
+      hasDragged.current = true;
+    }
+    const clampedX = Math.max(-150, Math.min(150, nextX));
+    dragXRef.current = clampedX;
+    setDragX(clampedX);
+  };
+
+  const handlePointerUp = (event) => {
+    if (!isDragging) return;
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+    setIsDragging(false);
+
+    const threshold = 96;
+    const releasedX = dragXRef.current;
+    if (cards.length > 1 && Math.abs(releasedX) >= threshold) {
+      const direction = releasedX > 0 ? -1 : 1;
+      setIsSwipingOut(true);
+      setDragX(direction > 0 ? -460 : 460);
+      window.setTimeout(() => {
+        selectCardIndex(currentCardIndex + direction);
+        dragXRef.current = 0;
+        setDragX(0);
+        setIsSwipingOut(false);
+        setSlideDirection(direction > 0 ? "slide-next" : "slide-prev");
+        window.setTimeout(() => setSlideDirection(""), 260);
+      }, 190);
       return;
     }
-    const diff = event.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(diff) > 42) {
-      moveCard(diff < 0 ? 1 : -1);
-    }
-    setTouchStartX(null);
+
+    dragXRef.current = 0;
+    setDragX(0);
+  };
+
+  const cardDragStyle = {
+    transform: `translateX(${dragX}px) rotate(${dragX / 18}deg)`,
+    opacity: isSwipingOut ? 0.18 : 1,
+    transition: isDragging ? "none" : "transform 0.24s ease, opacity 0.18s ease"
   };
 
   return (
@@ -392,8 +441,11 @@ function CardScreen({
             flipCard();
           }
         }}
-        onTouchStart={(event) => setTouchStartX(event.touches[0].clientX)}
-        onTouchEnd={handleTouchEnd}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        style={dragX || isDragging || isSwipingOut ? cardDragStyle : undefined}
       >
         <div className="flip-card-inner">
           <section className="card-back-face">
