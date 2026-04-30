@@ -116,7 +116,8 @@ function App() {
 
   useEffect(() => {
     const setAppHeight = () => {
-      const height = window.visualViewport?.height ?? window.innerHeight;
+      const viewportHeight = window.visualViewport?.height ?? 0;
+      const height = Math.max(window.innerHeight, viewportHeight);
       document.documentElement.style.setProperty("--app-height", `${height}px`);
     };
 

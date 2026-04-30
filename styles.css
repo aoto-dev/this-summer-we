@@ -5,7 +5,11 @@
   font-family: "Zen Maru Gothic", system-ui, sans-serif;
   --app-bg: url("/背景画像２.png");
   --app-height: 100dvh;
-  background: #c8f1ff;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   -webkit-font-smoothing: antialiased;
 }
 
