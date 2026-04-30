@@ -499,7 +499,7 @@ function AddScreen({ cards, addCard, updateCard, deleteCard, goHome }) {
 
       <section className="added-card-section">
         <div className="added-card-heading">
-          <h2><IconCards size={28} stroke={1.9} />カード一覧！</h2>
+          <h2><IconCards size={28} stroke={1.9} />カード一覧あ</h2>
         </div>
         <div className="added-card-scroll">
           {cards.length === 0 ? (
