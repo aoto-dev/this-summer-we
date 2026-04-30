@@ -115,6 +115,23 @@ function App() {
   }, [screen]);
 
   useEffect(() => {
+    const setAppHeight = () => {
+      const viewportHeight = window.visualViewport?.height ?? 0;
+      const height = Math.max(window.innerHeight, viewportHeight);
+      document.documentElement.style.setProperty("--app-height", `${height}px`);
+    };
+
+    setAppHeight();
+    window.addEventListener("resize", setAppHeight);
+    window.visualViewport?.addEventListener("resize", setAppHeight);
+
+    return () => {
+      window.removeEventListener("resize", setAppHeight);
+      window.visualViewport?.removeEventListener("resize", setAppHeight);
+    };
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ currentId, currentCardIndex, isFlipped, cards, history }));
   }, [currentId, currentCardIndex, isFlipped, cards, history]);
 
@@ -209,7 +226,6 @@ function App() {
 
   return (
     <main className="app">
-      <div className="app-bg-layer" aria-hidden="true" />
       {screen === "home" && (
         <HomeScreen
           isDrawing={isDrawing}
@@ -500,7 +516,7 @@ function AddScreen({ cards, addCard, updateCard, deleteCard, goHome }) {
 
       <section className="added-card-section">
         <div className="added-card-heading">
-          <h2><IconCards size={28} stroke={1.9} />カード一覧い</h2>
+          <h2><IconCards size={28} stroke={1.9} />カード一覧</h2>
         </div>
         <div className="added-card-scroll">
           {cards.length === 0 ? (

@@ -4,6 +4,7 @@
   color: #062b60;
   font-family: "Zen Maru Gothic", system-ui, sans-serif;
   --app-bg: url("/背景画像２.png");
+  --app-height: 100dvh;
   background-color: #c8f1ff;
   background-image: var(--app-bg);
   background-size: cover;
@@ -18,50 +19,30 @@
 
 html,
 body {
-  position: fixed;
-  inset: 0;
   margin: 0;
   padding: 0;
   min-width: 320px;
   width: 100%;
-  height: 100%;
-  min-height: 100%;
+  height: var(--app-height);
+  min-height: var(--app-height);
   overflow: hidden;
   background-color: #c8f1ff;
   background-image: var(--app-bg);
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
-}
-
-body::before {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: -1px;
-  bottom: -260px;
-  z-index: 0;
-  content: "";
-  pointer-events: none;
-  background-color: #c8f1ff;
-  background-image: var(--app-bg);
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-  transform: translateZ(0);
 }
 
 #root {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
   width: 100%;
-  height: 100%;
-  min-height: 100%;
-  margin: 0;
-  padding: 0;
+  height: var(--app-height);
+  min-height: var(--app-height);
   overflow: hidden;
-  background: transparent;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
 button,
@@ -85,32 +66,17 @@ button:active:not(:disabled) {
 .app {
   position: fixed;
   inset: 0;
-  isolation: isolate;
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
+  width: 100vw;
+  height: var(--app-height);
+  min-height: var(--app-height);
   margin: 0;
   padding: 0;
-  background: transparent;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   overflow: hidden;
-}
-
-.app::before {
-  display: none;
-}
-
-.app-bg-layer {
-  display: none;
-}
-
-.app > * {
-  position: relative;
-  z-index: 1;
-}
-
-.app > .app-bg-layer {
-  position: fixed;
-  z-index: 0;
 }
 
 .app:has(.card-shell) {
@@ -129,7 +95,10 @@ button:active:not(:disabled) {
   max-width: 430px;
   margin: 0 auto;
   overflow: hidden;
-  background: transparent;
+  background-image: url("/背景画像２.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   opacity: 1;
   transition: opacity 0.24s ease;
 }
@@ -193,8 +162,7 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  bottom: -10px;
-  padding-bottom: env(safe-area-inset-bottom);
+  bottom: max(10px, env(safe-area-inset-bottom));
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -207,14 +175,14 @@ button:active:not(:disabled) {
   display: grid;
   justify-items: center;
   gap: 8px;
-  font-size: clamp(11px, 3.25vw, 14px);
+  font-size: clamp(12px, 3.6vw, 15px);
   font-weight: 900;
   letter-spacing: 1px;
 }
 
 .home-bottom-nav span {
-  width: min(16.4vw, 68px);
-  height: min(16.4vw, 68px);
+  width: min(18vw, 76px);
+  height: min(18vw, 76px);
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -278,7 +246,10 @@ button:active:not(:disabled) {
 .card-shell {
   align-items: center;
   padding: 0;
-  background: transparent;
+  background-image: url("/カード選択背景.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
 .card-shell::after {
@@ -652,7 +623,6 @@ button:active:not(:disabled) {
   z-index: 2;
   width: 100%;
   margin-top: auto;
-  padding-bottom: env(safe-area-inset-bottom);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -671,8 +641,8 @@ button:active:not(:disabled) {
 }
 
 .bottom-nav span {
-  width: 60px;
-  height: 60px;
+  width: 66px;
+  height: 66px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -714,20 +684,19 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  bottom: -10px;
+  bottom: max(10px, env(safe-area-inset-bottom));
   width: auto;
   margin-top: 0;
-  padding-bottom: env(safe-area-inset-bottom);
   align-items: flex-start;
 }
 
 .card-shell .bottom-nav button {
-  font-size: clamp(11px, 3.25vw, 14px);
+  font-size: clamp(12px, 3.6vw, 15px);
 }
 
 .card-shell .bottom-nav span {
-  width: min(16.4vw, 68px);
-  height: min(16.4vw, 68px);
+  width: min(18vw, 76px);
+  height: min(18vw, 76px);
   background: rgba(255, 255, 255, 0.96);
 }
 
@@ -743,9 +712,12 @@ button:active:not(:disabled) {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: max(10px, env(safe-area-inset-top)) 24px 18px;
-  background: transparent;
+  gap: 14px;
+  padding: max(18px, env(safe-area-inset-top)) 24px 18px;
+  background-image: url("/背景画像４.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
 .add-shell::after {
@@ -755,7 +727,7 @@ button:active:not(:disabled) {
 .add-shell .top-bar {
   justify-content: flex-start;
   flex-shrink: 0;
-  padding: 0 0 4px;
+  padding: 8px 0 48px;
 }
 
 .add-shell .top-bar button {
@@ -814,7 +786,7 @@ button:active:not(:disabled) {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 0 2px 18px;
+  padding: 4px 2px 18px;
 }
 
 .added-card-scroll {
@@ -872,7 +844,7 @@ button:active:not(:disabled) {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin: 0 2px 8px;
+  margin: 8px 2px 12px;
   color: #126cc8;
 }
 
@@ -1295,12 +1267,12 @@ button:active:not(:disabled) {
   }
 
   .bottom-nav span {
-    width: 54px;
-    height: 54px;
+    width: 58px;
+    height: 58px;
   }
 
   .bottom-nav button {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .card-shell .big-card {
@@ -1327,8 +1299,8 @@ button:active:not(:disabled) {
   }
 
   .card-shell .bottom-nav span {
-    width: min(16.4vw, 68px);
-    height: min(16.4vw, 68px);
+    width: min(18vw, 76px);
+    height: min(18vw, 76px);
   }
 }
 
