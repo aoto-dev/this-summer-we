@@ -3,7 +3,13 @@
 :root {
   color: #062b60;
   font-family: "Zen Maru Gothic", system-ui, sans-serif;
-  background: #c8f1ff;
+  --app-bg: url("/背景画像２.png");
+  --app-height: 100dvh;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -14,17 +20,29 @@
 html,
 body {
   margin: 0;
+  padding: 0;
   min-width: 320px;
   width: 100%;
-  height: 100%;
+  height: var(--app-height);
+  min-height: var(--app-height);
   overflow: hidden;
-  background: #c8f1ff;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
 #root {
   width: 100%;
-  height: 100%;
+  height: var(--app-height);
+  min-height: var(--app-height);
   overflow: hidden;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
 button,
@@ -46,16 +64,34 @@ button:active:not(:disabled) {
 }
 
 .app {
-  width: 100%;
-  height: 100dvh;
-  background: #c8f1ff;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: var(--app-height);
+  min-height: var(--app-height);
+  margin: 0;
+  padding: 0;
+  background-color: #c8f1ff;
+  background-image: var(--app-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   overflow: hidden;
+}
+
+.app:has(.card-shell) {
+  background-image: url("/カード選択背景.png");
+}
+
+.app:has(.add-shell) {
+  background-image: url("/背景画像４.png");
 }
 
 .home-screen {
   position: relative;
   width: min(100vw, 430px);
-  height: 100dvh;
+  height: 100%;
+  min-height: 100%;
   max-width: 430px;
   margin: 0 auto;
   overflow: hidden;
@@ -126,7 +162,7 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  top: 88.1%;
+  bottom: max(10px, env(safe-area-inset-bottom));
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -162,11 +198,12 @@ button:active:not(:disabled) {
 .screen-shell {
   position: relative;
   width: min(100vw, 430px);
-  height: 100dvh;
+  height: 100%;
+  min-height: 100%;
   max-width: 430px;
   margin: 0 auto;
   overflow: hidden;
-  padding: max(18px, env(safe-area-inset-top)) 22px max(16px, env(safe-area-inset-bottom));
+  padding: max(18px, env(safe-area-inset-top)) 22px 0;
   display: flex;
   flex-direction: column;
   background:
@@ -647,7 +684,7 @@ button:active:not(:disabled) {
   position: absolute;
   left: 8.8%;
   right: 8.8%;
-  top: 88.15%;
+  bottom: max(10px, env(safe-area-inset-bottom));
   width: auto;
   margin-top: 0;
   align-items: flex-start;
@@ -668,14 +705,15 @@ button:active:not(:disabled) {
 }
 
 .add-shell {
-  height: 100dvh;
+  height: 100%;
+  min-height: 100%;
   max-width: 430px;
   margin: 0 auto;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: max(18px, env(safe-area-inset-top)) 24px max(18px, env(safe-area-inset-bottom));
+  padding: max(18px, env(safe-area-inset-top)) 24px 18px;
   background-image: url("/背景画像４.png");
   background-size: cover;
   background-position: center top;
@@ -689,7 +727,7 @@ button:active:not(:disabled) {
 .add-shell .top-bar {
   justify-content: flex-start;
   flex-shrink: 0;
-  padding: 8px 0 72px;
+  padding: 8px 0 48px;
 }
 
 .add-shell .top-bar button {
@@ -806,7 +844,7 @@ button:active:not(:disabled) {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin: 12px 2px 14px;
+  margin: 8px 2px 12px;
   color: #126cc8;
 }
 

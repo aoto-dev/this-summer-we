@@ -106,6 +106,32 @@ function App() {
   const recentIds = useMemo(() => history.map((item) => item.id), [history]);
 
   useEffect(() => {
+    const backgrounds = {
+      home: "url('/背景画像２.png')",
+      card: "url('/カード選択背景.png')",
+      add: "url('/背景画像４.png')"
+    };
+    document.documentElement.style.setProperty("--app-bg", backgrounds[screen] ?? backgrounds.home);
+  }, [screen]);
+
+  useEffect(() => {
+    const setAppHeight = () => {
+      const viewportHeight = window.visualViewport?.height ?? 0;
+      const height = Math.max(window.innerHeight, viewportHeight);
+      document.documentElement.style.setProperty("--app-height", `${height}px`);
+    };
+
+    setAppHeight();
+    window.addEventListener("resize", setAppHeight);
+    window.visualViewport?.addEventListener("resize", setAppHeight);
+
+    return () => {
+      window.removeEventListener("resize", setAppHeight);
+      window.visualViewport?.removeEventListener("resize", setAppHeight);
+    };
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ currentId, currentCardIndex, isFlipped, cards, history }));
   }, [currentId, currentCardIndex, isFlipped, cards, history]);
 
