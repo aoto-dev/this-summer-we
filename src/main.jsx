@@ -282,6 +282,12 @@ function modalTitle(modal) {
 function HomeScreen({ isDrawing, isFading, drawCard, goAdd, openHistory, goHome, openHowTo }) {
   return (
     <section className={`home-screen ${isFading ? "fade-out" : ""}`} aria-label="ホーム">
+      <button className="card-top-button card-back-button" onClick={openHowTo} aria-label="遊び方">
+        <CircleHelp size={30} strokeWidth={2.7} />
+      </button>
+      <button className="card-top-button card-history-button" onClick={openHistory} aria-label="履歴を見る">
+        <History size={30} strokeWidth={2.7} />
+      </button>
       <div className="home-actions">
         <button className="home-main-button draw-button pressable" aria-label="カードを引く" onClick={drawCard} disabled={isDrawing}>
           <IconCards className="button-icon" size={34} stroke={2.2} aria-hidden="true" />
@@ -292,20 +298,6 @@ function HomeScreen({ isDrawing, isFading, drawCard, goAdd, openHistory, goHome,
           カードを追加
         </button>
       </div>
-      <nav className="home-bottom-nav" aria-label="ホーム下部ナビゲーション">
-        <button className="pressable" onClick={openHistory}>
-          <span><History size={34} /></span>
-          履歴を見る
-        </button>
-        <button className="pressable" onClick={goHome}>
-          <span><House size={34} /></span>
-          ホーム
-        </button>
-        <button className="pressable" onClick={openHowTo}>
-          <span><CircleHelp size={34} /></span>
-          遊び方
-        </button>
-      </nav>
     </section>
   );
 }
