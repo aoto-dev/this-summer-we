@@ -111,7 +111,7 @@ button:active:not(:disabled) {
   position: absolute;
   left: 14.1%;
   right: 14.1%;
-  top: 73.7%;
+  top: 76.5%;
   display: grid;
   gap: 1.75dvh;
 }
