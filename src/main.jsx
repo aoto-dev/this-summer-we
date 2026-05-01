@@ -878,21 +878,19 @@ function HistoryDetailScreen({ item, goBack, deleteRecord, updateRecord }) {
       </section>
 
       <section className="detail-note-panel" aria-label="記録メモ">
-        <label>
-          <input
-            value={item.place ?? ""}
-            onChange={(event) => updateRecord({ place: event.target.value })}
-            placeholder="例：海の近くのコンビニ"
-          />
-        </label>
-        <label>
-          <textarea
-            value={item.memo ?? ""}
-            onChange={(event) => updateRecord({ memo: event.target.value })}
-            placeholder="今日のことを少しだけ残す"
-            rows={3}
-          />
-        </label>
+        <input
+          className="detail-place-input"
+          value={item.place ?? ""}
+          onChange={(event) => updateRecord({ place: event.target.value })}
+          placeholder="タップして入力してください"
+        />
+        <textarea
+          className="detail-memo-input"
+          value={item.memo ?? ""}
+          onChange={(event) => updateRecord({ memo: event.target.value })}
+          placeholder="タップして入力してください"
+          rows={3}
+        />
       </section>
 
       <button className="detail-delete-button" onClick={deleteRecord} aria-label="この記録を削除する" />

@@ -985,7 +985,7 @@ button:active:not(:disabled) {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   overflow: hidden;
   background: #fffefb;
 }
@@ -1191,37 +1191,37 @@ button:active:not(:disabled) {
 .detail-note-panel {
   top: 69%;
   min-height: 16.8%;
-  padding: 17px 20px 18px;
-  display: grid;
-  gap: 14px;
+  padding: 0;
 }
 
-.detail-note-panel label {
-  display: grid;
-  gap: 0;
-  color: #0a4d93;
-  font-size: clamp(14px, 4vw, 17px);
-  font-weight: 800;
-  letter-spacing: 0.03em;
-}
-
-.detail-note-panel input,
-.detail-note-panel textarea {
-  width: 100%;
+.detail-place-input,
+.detail-memo-input {
+  position: absolute;
+  left: 47%;
+  right: 9%;
   border: 0;
-  border-bottom: 2px solid rgba(82, 184, 237, 0.45);
   border-radius: 0;
   outline: none;
   resize: none;
   background: transparent;
   color: #07275c;
-  font-size: clamp(15px, 4.2vw, 18px);
+  font-size: clamp(7px, 2.8vw, 11px);
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 1.35;
 }
 
-.detail-note-panel input::placeholder,
-.detail-note-panel textarea::placeholder {
+.detail-place-input {
+  top: 17%;
+  height: 26%;
+}
+
+.detail-memo-input {
+  top: 73%;
+  height: 32%;
+}
+
+.detail-place-input::placeholder,
+.detail-memo-input::placeholder {
   color: rgba(21, 126, 211, 0.42);
 }
 
