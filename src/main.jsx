@@ -681,10 +681,13 @@ function HistoryScreen({ history, goHome, clearHistory, deleteHistoryItem }) {
 
 function HistoryRow({ item, onDelete }) {
   const [offset, setOffset] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const rowRef = useRef(null);
   const swipeRef = useRef(null);
-  const revealWidth = 82;
+  const revealWidth = 92;
 
   const startSwipe = (event) => {
+    if (isDeleting) return;
     swipeRef.current = {
       x: event.clientX,
       y: event.clientY,
@@ -705,18 +708,37 @@ function HistoryRow({ item, onDelete }) {
     }
     if (swipe.locked !== "x") return;
 
-    const nextOffset = Math.min(0, Math.max(-revealWidth, swipe.startOffset + dx));
+    const rowWidth = rowRef.current?.offsetWidth ?? 320;
+    const nextOffset = Math.min(0, Math.max(-rowWidth, swipe.startOffset + dx));
     setOffset(nextOffset);
   };
 
   const endSwipe = () => {
     if (!swipeRef.current) return;
     swipeRef.current = null;
-    setOffset((value) => (Math.abs(value) > revealWidth * 0.45 ? -revealWidth : 0));
+    const rowWidth = rowRef.current?.offsetWidth ?? 320;
+
+    setOffset((value) => {
+      const distance = Math.abs(value);
+      if (distance >= rowWidth * 0.5) {
+        setIsDeleting(true);
+        window.setTimeout(onDelete, 190);
+        return -(rowWidth + 32);
+      }
+      return distance > revealWidth * 0.45 ? -revealWidth : 0;
+    });
   };
 
+  const rowWidth = rowRef.current?.offsetWidth ?? 320;
+  const deleteProgress = Math.min(1, Math.abs(offset) / (rowWidth * 0.5));
+  const isDeleteReady = deleteProgress >= 1;
+
   return (
-    <li className={`history-row ${offset > 0 ? "is-revealed" : ""}`}>
+    <li
+      ref={rowRef}
+      className={`history-row ${offset < 0 ? "is-revealed" : ""} ${isDeleteReady ? "is-delete-ready" : ""} ${isDeleting ? "is-deleting" : ""}`}
+      style={{ "--delete-progress": deleteProgress }}
+    >
       <button className="history-delete-action" onClick={onDelete} aria-label={`${item.ja}を履歴から削除`}>
         <Trash2 size={24} strokeWidth={2.4} />
         削除
