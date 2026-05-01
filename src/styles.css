@@ -866,7 +866,7 @@ button:active:not(:disabled) {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   overflow: hidden;
   background: #fffefb;
 }
@@ -961,8 +961,8 @@ button:active:not(:disabled) {
 .detail-photo-panel,
 .detail-note-panel {
   position: absolute;
-  left: 8.4%;
-  right: 8.4%;
+  left: 7.4%;
+  right: 7.8%;
   background: transparent;
 }
 
@@ -1016,7 +1016,7 @@ button:active:not(:disabled) {
 .detail-card-copy {
   position: absolute;
   left: 108px;
-  right: 12px;
+  right: 16px;
   top: 20px;
   min-width: 0;
 }
@@ -1065,9 +1065,36 @@ button:active:not(:disabled) {
 }
 
 .detail-photo-panel {
-  top: 36.4%;
-  height: 30.2%;
+  top: 39.7%;
+  height: 27.9%;
   padding: 14px;
+}
+
+.detail-photo-panel::before,
+.detail-photo-panel::after {
+  position: absolute;
+  z-index: 3;
+  content: "";
+  pointer-events: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.detail-photo-panel::before {
+  left: -14px;
+  top: -10px;
+  width: 68px;
+  height: 58px;
+  background-image: url("/貝殻.png");
+}
+
+.detail-photo-panel::after {
+  right: -25px;
+  bottom: -7px;
+  width: 92px;
+  height: 80px;
+  background-image: url("/朝顔.png");
 }
 
 .detail-photo-panel input {
@@ -1093,10 +1120,60 @@ button:active:not(:disabled) {
   letter-spacing: 0.04em;
 }
 
-.detail-photo-button span {
+.detail-photo-empty {
   display: grid;
   justify-items: center;
+  align-content: center;
+  gap: 11px;
+  width: 100%;
+  height: 100%;
+  padding: 12px 10px;
+  text-align: center;
+}
+
+.detail-photo-empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #2189eb;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 5px 14px rgba(48, 117, 173, 0.18);
+}
+
+.detail-photo-empty strong {
+  color: #1686e4;
+  font-size: clamp(16px, 4vw, 20px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+}
+
+.detail-photo-empty small {
+  color: #1676cf;
+  font-size: clamp(8px, 2.4vw, 12px);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.05em;
+}
+
+.detail-photo-pick {
+  min-width: 140px;
+  height: 38px;
+  padding: 0 30px;
+  border: 1.4px dashed #43a3ff;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
+  color: #1888ed;
+  background: rgba(255, 255, 255, 0.6);
+  font-size: clamp(11px, 3.2vw, 12px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.06em;
 }
 
 .detail-photo-button img {

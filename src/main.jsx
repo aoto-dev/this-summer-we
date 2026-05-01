@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import TinderCard from "react-tinder-card";
-import { Calendar, Check, ChevronLeft, ChevronRight, CircleHelp, History, House, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Calendar, Check, ChevronLeft, ChevronRight, CircleHelp, History, House, Image, Pencil, Plus, Trash2, X } from "lucide-react";
 import { IconCards } from "@tabler/icons-react";
 import "./styles.css";
 
@@ -571,7 +571,7 @@ function AddScreen({ cards, addCard, updateCard, deleteCard, goHome }) {
           <h1>
             <span className="add-title-icon" aria-hidden="true">
               <IconCards size={34} stroke={1.9} />
-              <Plus size={18} strokeWidth={3} />
+              <Plus size={16} strokeWidth={3} />
             </span>
             カードを追加
           </h1>
@@ -862,9 +862,16 @@ function HistoryDetailScreen({ item, goBack, deleteRecord, updateRecord }) {
           {item.photo ? (
             <img src={item.photo} alt={`${item.ja}の写真`} />
           ) : (
-            <span>
-              <Plus size={34} strokeWidth={2.2} />
-              写真を追加
+            <span className="detail-photo-empty">
+              <span className="detail-photo-empty-icon">
+                <Image size={28} strokeWidth={2.4} />
+              </span>
+              <strong>写真を追加</strong>
+              <small>思い出の写真を追加して記録を彩りましょう</small>
+              <span className="detail-photo-pick">
+                <Plus size={20} strokeWidth={2.0} />
+                写真を選ぶ
+              </span>
             </span>
           )}
         </button>
