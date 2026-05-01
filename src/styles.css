@@ -46,6 +46,7 @@ body {
 }
 
 button,
+input,
 textarea {
   font: inherit;
 }
@@ -680,7 +681,7 @@ button:active:not(:disabled) {
   padding: 13px 28px;
   border: 1.5px solid rgba(255, 255, 255, 0.78);
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  grid-template-columns: 44px minmax(0, 1fr) 36px;
   align-items: center;
   justify-items: center;
   gap: 8px;
@@ -772,6 +773,15 @@ button:active:not(:disabled) {
 .history-panel::-webkit-scrollbar-thumb {
   border-radius: 999px;
   background: rgba(22, 126, 218, 0.5);
+}
+
+.history-panel.is-empty {
+  overflow: hidden;
+  scrollbar-width: none;
+}
+
+.history-panel.is-empty::-webkit-scrollbar {
+  display: none;
 }
 
 .history-card-list {
@@ -914,29 +924,213 @@ button:active:not(:disabled) {
 }
 
 .history-empty {
-  min-height: 220px;
-  margin: 40px 0 0;
+  min-height: 58dvh;
+  margin: 14dvh 0 0;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+}
+
+.history-empty img {
+  display: block;
+  width: min(68vw, 300px);
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.history-detail-screen {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  height: 100%;
+  min-height: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  background-image: url("/履歴詳細.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.history-detail-back-button {
+  left: 24px;
+}
+
+.detail-card-summary,
+.detail-photo-panel,
+.detail-note-panel {
+  position: absolute;
+  left: 8.4%;
+  right: 8.4%;
+  background: transparent;
+}
+
+.detail-card-summary {
+  top: 20.4%;
+  min-height: 118px;
+  padding: 8px 16px 8px 0px;
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-card-thumb {
+  width: 78px;
+  height: 110px;
+  padding: 13px 9px 9px;
+  border: 2px solid #141414;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  background: #fffefb;
+}
+
+.detail-card-thumb strong {
+  color: #171717;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.detail-card-thumb span {
+  margin-top: 7px;
+  color: #f45196;
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 8px;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.detail-card-copy {
+  min-width: 0;
+}
+
+.detail-card-copy h1 {
+  margin: 0;
+  color: #071f42;
+  font-size: clamp(20px, 5.8vw, 25px);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.03em;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.detail-card-copy time {
+  display: block;
+  margin-top: 8px;
+  color: #1686e4;
+  font-size: clamp(12px, 3.4vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.detail-photo-panel {
+  top: 36.4%;
+  height: 30.2%;
+  padding: 14px;
+}
+
+.detail-photo-panel input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.detail-photo-button {
+  width: 100%;
+  height: 100%;
+  border: 0;
   border-radius: 18px;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.9);
-  color: #0b477d;
-  font-size: 17px;
-  font-weight: 700;
+  overflow: hidden;
+  background: transparent;
+  color: #1686e4;
+  font-size: clamp(17px, 4.8vw, 22px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
 }
 
-.history-clear-button {
+.detail-photo-button span {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.detail-photo-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.detail-photo-button.has-photo {
+  padding: 0;
+  background: transparent;
+}
+
+.detail-note-panel {
+  top: 69%;
+  min-height: 16.8%;
+  padding: 17px 20px 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.detail-note-panel label {
+  display: grid;
+  gap: 7px;
+  color: #0a4d93;
+  font-size: clamp(14px, 4vw, 17px);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.detail-note-panel input,
+.detail-note-panel textarea {
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid rgba(82, 184, 237, 0.45);
+  border-radius: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: #07275c;
+  font-size: clamp(15px, 4.2vw, 18px);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.detail-note-panel input::placeholder,
+.detail-note-panel textarea::placeholder {
+  color: rgba(21, 126, 211, 0.42);
+}
+
+.detail-delete-button {
   position: absolute;
   left: 50%;
   bottom: max(20px, env(safe-area-inset-bottom));
-  z-index: 2;
-  width: 190px;
-  height: 42px;
+  width: 220px;
+  height: 44px;
   transform: translateX(-50%);
   background: transparent;
 }
 
-.history-clear-button:active:not(:disabled) {
+.detail-delete-button:active:not(:disabled) {
   transform: translateX(-50%) scale(0.95);
 }
 
@@ -1603,7 +1797,7 @@ button:active:not(:disabled) {
 .card-shell .card-action-stack .primary-button::after,
 .card-shell .card-action-stack .execute-button::after {
   content: "";
-  width: 44px;
+  width: 36px;
   height: 28px;
 }
 

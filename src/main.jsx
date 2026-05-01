@@ -99,6 +99,7 @@ function App() {
   const [isFlipped, setIsFlipped] = useState(initial?.isFlipped ?? false);
   const [cards, setCards] = useState(initial?.cards ?? INITIAL_CARDS);
   const [history, setHistory] = useState(initial?.history ?? []);
+  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [homeFading, setHomeFading] = useState(false);
   const [modal, setModal] = useState(null);
@@ -110,7 +111,9 @@ function App() {
     const backgrounds = {
       home: "url('/背景画像２.png')",
       card: "url('/カード選択背景.png')",
-      add: "url('/背景画像４.png')"
+      add: "url('/背景画像４.png')",
+      history: "url('/履歴背景.png')",
+      historyDetail: "url('/履歴詳細.png')"
     };
     document.documentElement.style.setProperty("--app-bg", backgrounds[screen] ?? backgrounds.home);
   }, [screen]);
@@ -199,6 +202,10 @@ function App() {
     setHistory((items) => items.filter((_, index) => index !== targetIndex));
   };
 
+  const updateHistoryItem = (targetIndex, patch) => {
+    setHistory((items) => items.map((item, index) => (index === targetIndex ? { ...item, ...patch } : item)));
+  };
+
   const reset = () => {
     setCurrentId(null);
     setCurrentCardIndex(0);
@@ -229,6 +236,18 @@ function App() {
       setIsFlipped(false);
       setScreen("home");
     }
+  };
+
+  const openHistoryDetail = (index) => {
+    setSelectedHistoryIndex(index);
+    setScreen("historyDetail");
+  };
+
+  const deleteSelectedHistory = () => {
+    if (selectedHistoryIndex === null) return;
+    deleteHistoryItem(selectedHistoryIndex);
+    setSelectedHistoryIndex(null);
+    setScreen("history");
   };
 
   return (
@@ -276,8 +295,19 @@ function App() {
         <HistoryScreen
           history={history}
           goHome={() => setScreen("home")}
-          clearHistory={() => setHistory([])}
           deleteHistoryItem={deleteHistoryItem}
+          openHistoryDetail={openHistoryDetail}
+        />
+      )}
+
+      {screen === "historyDetail" && (
+        <HistoryDetailScreen
+          item={selectedHistoryIndex === null ? null : history[selectedHistoryIndex]}
+          goBack={() => setScreen("history")}
+          deleteRecord={deleteSelectedHistory}
+          updateRecord={(patch) => {
+            if (selectedHistoryIndex !== null) updateHistoryItem(selectedHistoryIndex, patch);
+          }}
         />
       )}
 
@@ -649,14 +679,14 @@ function BottomNav({ openHistory, goHome, openHowTo }) {
   );
 }
 
-function HistoryScreen({ history, goHome, clearHistory, deleteHistoryItem }) {
+function HistoryScreen({ history, goHome, deleteHistoryItem, openHistoryDetail }) {
   return (
     <section className="history-screen" aria-label="履歴">
       <button className="card-top-button history-back-button" onClick={goHome} aria-label="ホームに戻る">
         <ChevronLeft size={42} strokeWidth={3.2} />
       </button>
 
-      <div className="history-panel">
+      <div className={`history-panel ${history.length ? "" : "is-empty"}`}>
         {history.length ? (
           <ul className="history-card-list">
             {history.map((item, index) => (
@@ -664,26 +694,26 @@ function HistoryScreen({ history, goHome, clearHistory, deleteHistoryItem }) {
                 key={item.historyId ?? `${item.id}-${item.executedAtLabel ?? item.executedAt ?? index}`}
                 item={item}
                 onDelete={() => deleteHistoryItem(index)}
+                onOpen={() => openHistoryDetail(index)}
               />
             ))}
           </ul>
         ) : (
-          <p className="history-empty">まだ履歴はありません。</p>
+          <div className="history-empty">
+            <img src="/履歴なし.png" alt="まだ履歴はありません。カードを引くたびに、ここに履歴が表示されます。" />
+          </div>
         )}
       </div>
-
-      {!!history.length && (
-        <button className="history-clear-button" onClick={clearHistory} aria-label="履歴をすべて削除" />
-      )}
     </section>
   );
 }
 
-function HistoryRow({ item, onDelete }) {
+function HistoryRow({ item, onDelete, onOpen }) {
   const [offset, setOffset] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const rowRef = useRef(null);
   const swipeRef = useRef(null);
+  const didDragRef = useRef(false);
   const revealWidth = 92;
 
   const startSwipe = (event) => {
@@ -694,6 +724,7 @@ function HistoryRow({ item, onDelete }) {
       startOffset: offset,
       locked: null
     };
+    didDragRef.current = false;
     event.currentTarget.setPointerCapture?.(event.pointerId);
   };
 
@@ -707,6 +738,7 @@ function HistoryRow({ item, onDelete }) {
       swipe.locked = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
     }
     if (swipe.locked !== "x") return;
+    didDragRef.current = true;
 
     const rowWidth = rowRef.current?.offsetWidth ?? 320;
     const nextOffset = Math.min(0, Math.max(-rowWidth, swipe.startOffset + dx));
@@ -733,6 +765,18 @@ function HistoryRow({ item, onDelete }) {
   const deleteProgress = Math.min(1, Math.abs(offset) / (rowWidth * 0.5));
   const isDeleteReady = deleteProgress >= 1;
 
+  const openRow = () => {
+    if (didDragRef.current) {
+      didDragRef.current = false;
+      return;
+    }
+    if (Math.abs(offset) > 2) {
+      setOffset(0);
+      return;
+    }
+    onOpen();
+  };
+
   return (
     <li
       ref={rowRef}
@@ -750,6 +794,7 @@ function HistoryRow({ item, onDelete }) {
         onPointerMove={moveSwipe}
         onPointerUp={endSwipe}
         onPointerCancel={endSwipe}
+        onClick={openRow}
       >
         <div className="history-thumb" aria-hidden="true">
           <strong>{item.ja}</strong>
@@ -762,6 +807,88 @@ function HistoryRow({ item, onDelete }) {
         <ChevronRight className="history-row-icon" size={26} strokeWidth={2.4} aria-hidden="true" />
       </div>
     </li>
+  );
+}
+
+function HistoryDetailScreen({ item, goBack, deleteRecord, updateRecord }) {
+  const fileInputRef = useRef(null);
+
+  if (!item) {
+    return (
+      <section className="history-detail-screen" aria-label="履歴詳細">
+        <button className="card-top-button history-detail-back-button" onClick={goBack} aria-label="履歴に戻る">
+          <ChevronLeft size={42} strokeWidth={3.2} />
+        </button>
+      </section>
+    );
+  }
+
+  const changePhoto = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        updateRecord({ photo: reader.result });
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <section className="history-detail-screen" aria-label="履歴詳細">
+      <button className="card-top-button history-detail-back-button" onClick={goBack} aria-label="履歴に戻る">
+        <ChevronLeft size={42} strokeWidth={3.2} />
+      </button>
+
+      <section className="detail-card-summary" aria-label="引いたカード情報">
+        <div className="detail-card-thumb" aria-hidden="true">
+          <strong>{item.ja}</strong>
+          <span>{item.en}</span>
+        </div>
+        <div className="detail-card-copy">
+          <h1>{item.ja}</h1>
+          <time>{item.executedAtLabel ?? item.executedAt?.replaceAll("-", "/")}</time>
+        </div>
+      </section>
+
+      <section className="detail-photo-panel" aria-label="写真">
+        <input ref={fileInputRef} type="file" accept="image/*" onChange={changePhoto} />
+        <button className={`detail-photo-button ${item.photo ? "has-photo" : ""}`} onClick={() => fileInputRef.current?.click()}>
+          {item.photo ? (
+            <img src={item.photo} alt={`${item.ja}の写真`} />
+          ) : (
+            <span>
+              <Plus size={34} strokeWidth={2.2} />
+              写真を追加
+            </span>
+          )}
+        </button>
+      </section>
+
+      <section className="detail-note-panel" aria-label="記録メモ">
+        <label>
+          <span>どこで？</span>
+          <input
+            value={item.place ?? ""}
+            onChange={(event) => updateRecord({ place: event.target.value })}
+            placeholder="例：海の近くのコンビニ"
+          />
+        </label>
+        <label>
+          <span>ひとことメモ</span>
+          <textarea
+            value={item.memo ?? ""}
+            onChange={(event) => updateRecord({ memo: event.target.value })}
+            placeholder="今日のことを少しだけ残す"
+            rows={3}
+          />
+        </label>
+      </section>
+
+      <button className="detail-delete-button" onClick={deleteRecord} aria-label="この記録を削除する" />
+    </section>
   );
 }
 
