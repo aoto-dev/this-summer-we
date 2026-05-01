@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import TinderCard from "react-tinder-card";
-import { Check, ChevronLeft, ChevronRight, CircleHelp, History, House, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Calendar, Check, ChevronLeft, ChevronRight, CircleHelp, History, House, Pencil, Plus, Trash2, X } from "lucide-react";
 import { IconCards } from "@tabler/icons-react";
 import "./styles.css";
 
@@ -849,7 +849,10 @@ function HistoryDetailScreen({ item, goBack, deleteRecord, updateRecord }) {
         </div>
         <div className="detail-card-copy">
           <h1>{item.ja}</h1>
-          <time>{item.executedAtLabel ?? item.executedAt?.replaceAll("-", "/")}</time>
+          <div className="detail-date-block">
+            <span><Calendar size={15} strokeWidth={2.8} />記録した日時</span>
+            <time>{item.executedAtLabel ?? item.executedAt?.replaceAll("-", "/")}</time>
+          </div>
         </div>
       </section>
 
@@ -869,7 +872,6 @@ function HistoryDetailScreen({ item, goBack, deleteRecord, updateRecord }) {
 
       <section className="detail-note-panel" aria-label="記録メモ">
         <label>
-          <span>どこで？</span>
           <input
             value={item.place ?? ""}
             onChange={(event) => updateRecord({ place: event.target.value })}
@@ -877,7 +879,6 @@ function HistoryDetailScreen({ item, goBack, deleteRecord, updateRecord }) {
           />
         </label>
         <label>
-          <span>ひとことメモ</span>
           <textarea
             value={item.memo ?? ""}
             onChange={(event) => updateRecord({ memo: event.target.value })}
