@@ -5,7 +5,7 @@
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
-    "@react-spring/web": "^10.0.3",
+    "@react-spring/web": "^9.7.5",
     "@tabler/icons-react": "^3.41.1",
     "@vitejs/plugin-react": "latest",
     "lucide-react": "latest",
