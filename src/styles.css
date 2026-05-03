@@ -1909,7 +1909,7 @@ button:active:not(:disabled) {
   padding: 13px 28px;
   border-radius: 999px;
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 30px;
+  grid-template-columns: 44px minmax(0, 1fr) 24px;
   align-items: center;
   justify-items: center;
   gap: 8px;
