@@ -33,6 +33,17 @@ const JA_LINE_HINTS = {
 
 const STORAGE_KEY = "summer-card-app-v2";
 const OLD_STORAGE_KEY = "summer-card-app-v1";
+const PRELOAD_IMAGES = [
+  "/背景画像２.png",
+  "/カード選択背景.png",
+  "/背景画像４.png",
+  "/履歴背景.png",
+  "/履歴詳細.png",
+  "/カード裏面.png",
+  "/履歴なし.png",
+  "/朝顔.png",
+  "/貝殻.png"
+];
 
 function loadState() {
   try {
@@ -177,6 +188,13 @@ function App() {
 
   const currentCard = cards[currentCardIndex] ?? cards.find((card) => card.id === currentId) ?? null;
   const recentIds = useMemo(() => history.map((item) => item.id), [history]);
+
+  useEffect(() => {
+    PRELOAD_IMAGES.forEach((src) => {
+      const image = new window.Image();
+      image.src = src;
+    });
+  }, []);
 
   useEffect(() => {
     const backgrounds = {
