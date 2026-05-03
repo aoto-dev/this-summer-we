@@ -93,7 +93,7 @@ function getJapaneseLines(card) {
 
 function App() {
   const initial = loadState();
-  const [screen, setScreen] = useState(initial?.currentId ? "card" : "home");
+  const [screen, setScreen] = useState("home");
   const [currentId, setCurrentId] = useState(initial?.currentId ?? null);
   const [currentCardIndex, setCurrentCardIndex] = useState(initial?.currentCardIndex ?? 0);
   const [isFlipped, setIsFlipped] = useState(initial?.isFlipped ?? false);
