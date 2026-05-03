@@ -839,16 +839,21 @@ function BottomNav({ openHistory, goHome, openHowTo }) {
 }
 
 function HistoryScreen({ history, goHome, deleteHistoryItem, openHistoryDetail }) {
-  const [isOpeningDetail, setIsOpeningDetail] = useState(false);
+  const [isLeavingHistory, setIsLeavingHistory] = useState(false);
 
   const openDetail = (index) => {
-    setIsOpeningDetail(true);
+    setIsLeavingHistory(true);
     window.setTimeout(() => openHistoryDetail(index), 40);
   };
 
+  const leaveHistory = () => {
+    setIsLeavingHistory(true);
+    window.setTimeout(goHome, 40);
+  };
+
   return (
-    <section className={`history-screen ${isOpeningDetail ? "is-opening-detail" : ""}`} aria-label="履歴">
-      <button className="card-top-button history-back-button" onClick={goHome} aria-label="ホームに戻る">
+    <section className={`history-screen ${isLeavingHistory ? "is-leaving-history" : ""}`} aria-label="履歴">
+      <button className="card-top-button history-back-button" onClick={leaveHistory} aria-label="ホームに戻る">
         <ChevronLeft size={42} strokeWidth={3.2} />
       </button>
 

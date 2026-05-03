@@ -851,11 +851,11 @@ button:active:not(:disabled) {
   opacity: 0;
 }
 
-.history-screen.is-opening-detail .history-row {
+.history-screen.is-leaving-history .history-row {
   background: transparent;
 }
 
-.history-screen.is-opening-detail .history-delete-action {
+.history-screen.is-leaving-history .history-delete-action {
   opacity: 0;
 }
 
