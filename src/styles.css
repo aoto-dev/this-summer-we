@@ -843,6 +843,14 @@ button:active:not(:disabled) {
   font-size: 14px;
 }
 
+.history-row.is-opening {
+  background: transparent;
+}
+
+.history-row.is-opening .history-delete-action {
+  opacity: 0;
+}
+
 .history-row-card {
   position: relative;
   z-index: 1;

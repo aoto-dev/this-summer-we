@@ -870,6 +870,7 @@ function HistoryScreen({ history, goHome, deleteHistoryItem, openHistoryDetail }
 function HistoryRow({ item, onDelete, onOpen }) {
   const [offset, setOffset] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
   const rowRef = useRef(null);
   const swipeRef = useRef(null);
   const didDragRef = useRef(false);
@@ -933,13 +934,14 @@ function HistoryRow({ item, onDelete, onOpen }) {
       setOffset(0);
       return;
     }
-    onOpen();
+    setIsOpening(true);
+    window.setTimeout(onOpen, 40);
   };
 
   return (
     <li
       ref={rowRef}
-      className={`history-row ${offset < 0 ? "is-revealed" : ""} ${isDeleteReady ? "is-delete-ready" : ""} ${isDeleting ? "is-deleting" : ""}`}
+      className={`history-row ${offset < 0 ? "is-revealed" : ""} ${isDeleteReady ? "is-delete-ready" : ""} ${isDeleting ? "is-deleting" : ""} ${isOpening ? "is-opening" : ""}`}
       style={{ "--delete-progress": deleteProgress }}
     >
       <button className="history-delete-action" onClick={onDelete} aria-label={`${item.ja}を履歴から削除`}>
