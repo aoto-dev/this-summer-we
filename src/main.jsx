@@ -119,19 +119,60 @@ function App() {
   }, [screen]);
 
   useEffect(() => {
+    const timeoutIds = new Set();
+
+    const isStandalone = () =>
+      window.matchMedia?.("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
     const setAppHeight = () => {
-      const viewportHeight = window.visualViewport?.height ?? 0;
-      const height = Math.max(window.innerHeight, viewportHeight);
+      const heightCandidates = [
+        window.innerHeight,
+        window.visualViewport?.height,
+        document.documentElement.clientHeight
+      ];
+
+      if (isStandalone()) {
+        heightCandidates.push(window.screen?.height, window.screen?.availHeight);
+      }
+
+      const height = Math.ceil(Math.max(...heightCandidates.filter((value) => Number.isFinite(value) && value > 0)));
       document.documentElement.style.setProperty("--app-height", `${height}px`);
     };
 
-    setAppHeight();
-    window.addEventListener("resize", setAppHeight);
-    window.visualViewport?.addEventListener("resize", setAppHeight);
+    const scheduleAppHeightUpdate = () => {
+      setAppHeight();
+      window.requestAnimationFrame(setAppHeight);
+      [120, 360, 800, 1500].forEach((delay) => {
+        const id = window.setTimeout(() => {
+          timeoutIds.delete(id);
+          setAppHeight();
+        }, delay);
+        timeoutIds.add(id);
+      });
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        scheduleAppHeightUpdate();
+      }
+    };
+
+    scheduleAppHeightUpdate();
+    window.addEventListener("resize", scheduleAppHeightUpdate);
+    window.addEventListener("orientationchange", scheduleAppHeightUpdate);
+    window.addEventListener("pageshow", scheduleAppHeightUpdate);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.visualViewport?.addEventListener("resize", scheduleAppHeightUpdate);
+    window.visualViewport?.addEventListener("scroll", scheduleAppHeightUpdate);
 
     return () => {
-      window.removeEventListener("resize", setAppHeight);
-      window.visualViewport?.removeEventListener("resize", setAppHeight);
+      timeoutIds.forEach((id) => window.clearTimeout(id));
+      window.removeEventListener("resize", scheduleAppHeightUpdate);
+      window.removeEventListener("orientationchange", scheduleAppHeightUpdate);
+      window.removeEventListener("pageshow", scheduleAppHeightUpdate);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.visualViewport?.removeEventListener("resize", scheduleAppHeightUpdate);
+      window.visualViewport?.removeEventListener("scroll", scheduleAppHeightUpdate);
     };
   }, []);
 
