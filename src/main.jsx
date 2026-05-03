@@ -91,6 +91,76 @@ function getJapaneseLines(card) {
   return lines.slice(0, 3);
 }
 
+function readBlobAsDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+
+function loadImageFromUrl(url) {
+  return new Promise((resolve, reject) => {
+    const image = new window.Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("画像を読み込めませんでした。"));
+    image.src = url;
+  });
+}
+
+function canvasToBlob(canvas, quality) {
+  return new Promise((resolve) => {
+    canvas.toBlob(resolve, "image/jpeg", quality);
+  });
+}
+
+async function compressImageFile(file) {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("画像ファイルを選択してください。");
+  }
+
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    const image = await loadImageFromUrl(objectUrl);
+    const sourceWidth = image.naturalWidth || image.width;
+    const sourceHeight = image.naturalHeight || image.height;
+
+    if (!sourceWidth || !sourceHeight) {
+      throw new Error("画像サイズを取得できませんでした。");
+    }
+
+    const render = async (maxSide, quality) => {
+      const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+      canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+
+      const context = canvas.getContext("2d", { alpha: false });
+      if (!context) throw new Error("画像を変換できませんでした。");
+
+      context.fillStyle = "#fff";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      const blob = await canvasToBlob(canvas, quality);
+      if (blob) return readBlobAsDataUrl(blob);
+
+      return canvas.toDataURL("image/jpeg", quality);
+    };
+
+    const compressed = await render(1400, 0.74);
+    if (typeof compressed === "string" && compressed.length > 1_200_000) {
+      return render(1000, 0.62);
+    }
+
+    return compressed;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 function App() {
   const initial = loadState();
   const [screen, setScreen] = useState("home");
@@ -101,8 +171,9 @@ function App() {
   const [history, setHistory] = useState(initial?.history ?? []);
   const [selectedHistoryIndex, setSelectedHistoryIndex] = useState(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [homeFading, setHomeFading] = useState(false);
+  const [isScreenTransitioning, setIsScreenTransitioning] = useState(false);
   const [modal, setModal] = useState(null);
+  const screenTransitionTimer = useRef(null);
 
   const currentCard = cards[currentCardIndex] ?? cards.find((card) => card.id === currentId) ?? null;
   const recentIds = useMemo(() => history.map((item) => item.id), [history]);
@@ -177,8 +248,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ currentId, currentCardIndex, isFlipped, cards, history }));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ currentId, currentCardIndex, isFlipped, cards, history }));
+    } catch (error) {
+      console.warn("保存容量の上限に達したため、一部の変更を保存できませんでした。", error);
+    }
   }, [currentId, currentCardIndex, isFlipped, cards, history]);
+
+  useEffect(() => {
+    return () => {
+      if (screenTransitionTimer.current) {
+        window.clearTimeout(screenTransitionTimer.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (cards.length === 0) {
@@ -194,22 +277,36 @@ function App() {
     }
   }, [cards, currentCardIndex]);
 
+  const transitionToScreen = (nextScreen, beforeSwitch) => {
+    if (screenTransitionTimer.current) {
+      window.clearTimeout(screenTransitionTimer.current);
+    }
+
+    if (nextScreen === screen) {
+      beforeSwitch?.();
+      return;
+    }
+
+    setIsScreenTransitioning(true);
+    screenTransitionTimer.current = window.setTimeout(() => {
+      beforeSwitch?.();
+      setScreen(nextScreen);
+      screenTransitionTimer.current = null;
+      window.requestAnimationFrame(() => setIsScreenTransitioning(false));
+    }, 170);
+  };
+
   const drawCard = () => {
     if (isDrawing || cards.length === 0) return;
     const next = chooseCard(cards, currentId, recentIds);
     const nextIndex = Math.max(0, cards.findIndex((card) => card.id === next.id));
     setIsDrawing(true);
-    if (screen === "home") {
-      window.setTimeout(() => setHomeFading(true), 200);
-    }
-    window.setTimeout(() => {
+    transitionToScreen("card", () => {
       setCurrentId(next.id);
       setCurrentCardIndex(nextIndex);
       setIsFlipped(false);
-      setScreen("card");
-      setHomeFading(false);
       setIsDrawing(false);
-    }, screen === "home" ? 480 : 360);
+    });
   };
 
   const selectCardIndex = (nextIndex) => {
@@ -248,12 +345,13 @@ function App() {
   };
 
   const reset = () => {
-    setCurrentId(null);
-    setCurrentCardIndex(0);
-    setIsFlipped(false);
-    setHistory([]);
-    setScreen("home");
-    setModal(null);
+    transitionToScreen("home", () => {
+      setCurrentId(null);
+      setCurrentCardIndex(0);
+      setIsFlipped(false);
+      setHistory([]);
+      setModal(null);
+    });
   };
 
   const addCard = (card) => {
@@ -275,82 +373,84 @@ function App() {
       setCurrentId(null);
       setCurrentCardIndex(0);
       setIsFlipped(false);
-      setScreen("home");
+      transitionToScreen("home");
     }
   };
 
   const openHistoryDetail = (index) => {
-    setSelectedHistoryIndex(index);
-    setScreen("historyDetail");
+    transitionToScreen("historyDetail", () => setSelectedHistoryIndex(index));
   };
 
   const deleteSelectedHistory = () => {
     if (selectedHistoryIndex === null) return;
-    deleteHistoryItem(selectedHistoryIndex);
-    setSelectedHistoryIndex(null);
-    setScreen("history");
+    transitionToScreen("history", () => {
+      deleteHistoryItem(selectedHistoryIndex);
+      setSelectedHistoryIndex(null);
+    });
   };
 
   return (
     <main className="app">
-      {screen === "home" && (
-        <HomeScreen
-          isDrawing={isDrawing}
-          isFading={homeFading}
-          drawCard={drawCard}
-          goAdd={() => setScreen("add")}
-          openHistory={() => setScreen("history")}
-          openHowTo={() => setModal("howto")}
-          goHome={() => setScreen("home")}
-        />
-      )}
+      <div className={`screen-stage ${isScreenTransitioning ? "is-exiting" : ""}`}>
+        {screen === "home" && (
+          <HomeScreen
+            isDrawing={isDrawing}
+            isFading={false}
+            drawCard={drawCard}
+            goAdd={() => transitionToScreen("add")}
+            openHistory={() => transitionToScreen("history")}
+            openHowTo={() => setModal("howto")}
+            goHome={() => transitionToScreen("home")}
+          />
+        )}
 
-      {screen === "card" && (
-        <CardScreen
-          card={currentCard}
-          cards={cards}
-          isDrawing={isDrawing}
-          currentCardIndex={currentCardIndex}
-          isFlipped={isFlipped}
-          flipCard={() => setIsFlipped(true)}
-          selectCardIndex={selectCardIndex}
-          redrawCard={redrawCard}
-          executeCard={executeCard}
-          goHome={() => setScreen("home")}
-          openHistory={() => setScreen("history")}
-          openHowTo={() => setModal("howto")}
-        />
-      )}
+        {screen === "card" && (
+          <CardScreen
+            card={currentCard}
+            cards={cards}
+            isDrawing={isDrawing}
+            currentCardIndex={currentCardIndex}
+            isFlipped={isFlipped}
+            flipCard={() => setIsFlipped(true)}
+            selectCardIndex={selectCardIndex}
+            redrawCard={redrawCard}
+            executeCard={executeCard}
+            goHome={() => transitionToScreen("home")}
+            openHistory={() => transitionToScreen("history")}
+            openHowTo={() => setModal("howto")}
+          />
+        )}
 
-      {screen === "add" && (
-        <AddScreen
-          cards={cards}
-          addCard={addCard}
-          updateCard={updateCard}
-          deleteCard={deleteCard}
-          goHome={() => setScreen("home")}
-        />
-      )}
+        {screen === "add" && (
+          <AddScreen
+            cards={cards}
+            addCard={addCard}
+            updateCard={updateCard}
+            deleteCard={deleteCard}
+            goHome={() => transitionToScreen("home")}
+          />
+        )}
 
-      {screen === "history" && (
-        <HistoryScreen
-          history={history}
-          goHome={() => setScreen("home")}
-          deleteHistoryItem={deleteHistoryItem}
-          openHistoryDetail={openHistoryDetail}
-        />
-      )}
+        {screen === "history" && (
+          <HistoryScreen
+            history={history}
+            goHome={() => transitionToScreen("home")}
+            deleteHistoryItem={deleteHistoryItem}
+            openHistoryDetail={openHistoryDetail}
+          />
+        )}
 
-      {screen === "historyDetail" && (
-        <HistoryDetailScreen
-          item={selectedHistoryIndex === null ? null : history[selectedHistoryIndex]}
-          goBack={() => setScreen("history")}
-          deleteRecord={deleteSelectedHistory}
-          updateRecord={(patch) => {
-            if (selectedHistoryIndex !== null) updateHistoryItem(selectedHistoryIndex, patch);
-          }}
-        />
-      )}
+        {screen === "historyDetail" && (
+          <HistoryDetailScreen
+            item={selectedHistoryIndex === null ? null : history[selectedHistoryIndex]}
+            goBack={() => transitionToScreen("history")}
+            deleteRecord={deleteSelectedHistory}
+            updateRecord={(patch) => {
+              if (selectedHistoryIndex !== null) updateHistoryItem(selectedHistoryIndex, patch);
+            }}
+          />
+        )}
+      </div>
 
       {modal && (
         <Modal title={modalTitle(modal)} close={() => setModal(null)}>
@@ -864,17 +964,21 @@ function HistoryDetailScreen({ item, goBack, deleteRecord, updateRecord }) {
     );
   }
 
-  const changePhoto = (event) => {
+  const changePhoto = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        updateRecord({ photo: reader.result });
+    try {
+      const compressedPhoto = await compressImageFile(file);
+      if (typeof compressedPhoto === "string") {
+        updateRecord({ photo: compressedPhoto });
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (error) {
+      console.error(error);
+      window.alert("写真の読み込みに失敗しました。別の写真を選ぶか、スクリーンショットにしてから試してください。");
+    } finally {
+      event.target.value = "";
+    }
   };
 
   return (
@@ -925,12 +1029,11 @@ function HistoryDetailScreen({ item, goBack, deleteRecord, updateRecord }) {
           onChange={(event) => updateRecord({ place: event.target.value })}
           placeholder="タップして入力してください"
         />
-        <textarea
+        <input
           className="detail-memo-input"
           value={item.memo ?? ""}
           onChange={(event) => updateRecord({ memo: event.target.value })}
           placeholder="タップして入力してください"
-          rows={3}
         />
       </section>
 

@@ -88,6 +88,19 @@ button:active:not(:disabled) {
   background-image: url("/背景画像４.png");
 }
 
+.screen-stage {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  opacity: 1;
+  transition: opacity 0.17s ease;
+}
+
+.screen-stage.is-exiting {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .home-screen {
   position: relative;
   width: min(100vw, 430px);
@@ -1024,20 +1037,20 @@ button:active:not(:disabled) {
 .detail-card-copy h1 {
   margin: 0;
   color: #1552ae;
-  font-size: clamp(14px, 5.2vw, 23px);
+  font-size: clamp(13px, 5.1vw, 22px);
   font-weight: 700;
   line-height: 1.35;
   letter-spacing: 0.03em;
   word-break: keep-all;
   overflow-wrap: break-word;
-  height: 66px;
+  height: 80px;
   overflow: hidden;
 }
 
 .detail-date-block {
   position: absolute;
   left: 6px;
-  top: 80px;
+  top: 85px;
   display: grid;
   gap: 4px;
   color: #2d98ff;
@@ -1207,16 +1220,17 @@ button:active:not(:disabled) {
   color: #07275c;
   font-size: clamp(7px, 2.8vw, 11px);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .detail-place-input {
-  top: 17%;
+  top: 18%;
   height: 26%;
 }
 
 .detail-memo-input {
-  top: 73%;
+  top: 64%;
   height: 32%;
 }
 
