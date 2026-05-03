@@ -851,6 +851,14 @@ button:active:not(:disabled) {
   opacity: 0;
 }
 
+.history-screen.is-opening-detail .history-row {
+  background: transparent;
+}
+
+.history-screen.is-opening-detail .history-delete-action {
+  opacity: 0;
+}
+
 .history-row-card {
   position: relative;
   z-index: 1;
