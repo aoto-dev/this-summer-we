@@ -1211,13 +1211,13 @@ button:active:not(:disabled) {
 .detail-memo-input {
   position: absolute;
   left: 47%;
-  right: 9%;
+  right: 7%;
   border: 0;
   border-radius: 0;
   outline: none;
   resize: none;
   background: transparent;
-  color: #07275c;
+  color: #0a3984;
   font-size: clamp(7px, 2.8vw, 11px);
   font-weight: 600;
   line-height: 1;
