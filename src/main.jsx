@@ -414,6 +414,7 @@ function App() {
           <HomeScreen
             isDrawing={isDrawing}
             isFading={false}
+            hasCards={cards.length > 0}
             drawCard={drawCard}
             goAdd={() => transitionToScreen("add")}
             openHistory={() => transitionToScreen("history")}
@@ -483,7 +484,7 @@ function modalTitle(modal) {
   return { howto: "遊び方" }[modal];
 }
 
-function HomeScreen({ isDrawing, isFading, drawCard, goAdd, openHistory, goHome, openHowTo }) {
+function HomeScreen({ isDrawing, isFading, hasCards, drawCard, goAdd, openHistory, goHome, openHowTo }) {
   return (
     <section className={`home-screen ${isFading ? "fade-out" : ""}`} aria-label="ホーム">
       <button className="card-top-button card-back-button" onClick={openHowTo} aria-label="遊び方">
@@ -493,7 +494,7 @@ function HomeScreen({ isDrawing, isFading, drawCard, goAdd, openHistory, goHome,
         <History size={30} strokeWidth={2.1} />
       </button>
       <div className="home-actions">
-        <button className="home-main-button draw-button pressable" aria-label="カードを引く" onClick={drawCard} disabled={isDrawing}>
+        <button className="home-main-button draw-button pressable" aria-label="カードを引く" onClick={drawCard} disabled={isDrawing || !hasCards}>
           <IconCards className="button-icon" size={34} stroke={2.2} aria-hidden="true" />
           <span>カードを引く</span>
           <ChevronRight className="home-button-chevron" size={25} strokeWidth={2.7} aria-hidden="true" />
@@ -524,9 +525,14 @@ function CardScreen({
 }) {
   const [slideDirection, setSlideDirection] = useState("");
   const [isPromotingStack, setIsPromotingStack] = useState(false);
+  const [hasExecuted, setHasExecuted] = useState(false);
   const tapStartRef = useRef(null);
   const pendingSwipeRef = useRef(0);
   const swipeTimerRef = useRef(null);
+
+  useEffect(() => {
+    setHasExecuted(false);
+  }, [card?.id, isFlipped]);
 
   if (!card) {
     return (
@@ -676,9 +682,17 @@ function CardScreen({
           <IconCards className="button-icon" size={26} stroke={2.2} aria-hidden="true" />
           カードを引き直す
         </button>
-        <button className="execute-button" onClick={executeCard} disabled={!isFlipped}>
+        <button
+          className={`execute-button ${hasExecuted ? "is-done" : ""}`}
+          onClick={() => {
+            if (!isFlipped || hasExecuted) return;
+            executeCard();
+            setHasExecuted(true);
+          }}
+          disabled={!isFlipped || hasExecuted}
+        >
           <Check size={28} strokeWidth={2.6} />
-          実行する！
+          {hasExecuted ? "記録した！" : "実行する！"}
         </button>
       </div>
     </section>
@@ -703,7 +717,7 @@ function AddScreen({ cards, addCard, updateCard, deleteCard, goHome }) {
     if (!ja || isSaving) return;
 
     setIsSaving(true);
-    setStatus("英語訳を作成中...");
+    setStatus("");
     try {
       const en = await translate(ja);
       if (editingId) {
@@ -732,7 +746,7 @@ function AddScreen({ cards, addCard, updateCard, deleteCard, goHome }) {
               <IconCards size={34} stroke={1.9} />
               <Plus size={16} strokeWidth={3} />
             </span>
-            カードを追加
+            {editingId ? "カードを編集" : "カードを追加"}
           </h1>
           <form className="add-form" onSubmit={submit}>
             <label htmlFor="ja-card">日本語のお題</label>
@@ -748,7 +762,7 @@ function AddScreen({ cards, addCard, updateCard, deleteCard, goHome }) {
               <span className="char-count">{text.length}/60</span>
             </div>
             <button className="save-button" type="submit" disabled={!text.trim() || isSaving}>
-              {editingId ? "更新する" : "追加する"}
+              {isSaving ? "英語訳を作成中..." : editingId ? "更新する" : "追加する"}
             </button>
             {editingId && (
               <button className="ghost-button" type="button" onClick={() => setEditingId(null)}>
@@ -773,14 +787,22 @@ function AddScreen({ cards, addCard, updateCard, deleteCard, goHome }) {
           ) : (
             <ul className="added-card-grid custom-list">
               {cards.map((card) => (
-                <li key={card.id}>
+                <li key={card.id} className={editingId === card.id ? "is-editing" : ""}>
                   <strong>{card.ja}</strong>
                   <span>{card.en}</span>
                   <div>
                     <button onClick={() => setEditingId(card.id)} aria-label="編集">
                       <Pencil size={18} />
                     </button>
-                    <button onClick={() => deleteCard(card.id)} aria-label="削除">
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`「${card.ja}」を削除しますか？\nこのカードの履歴も一緒に削除されます。`)) {
+                          deleteCard(card.id);
+                          if (editingId === card.id) setEditingId(null);
+                        }
+                      }}
+                      aria-label="削除"
+                    >
                       <Trash2 size={18} />
                     </button>
                   </div>
@@ -1069,7 +1091,15 @@ function HistoryDetailScreen({ item, goBack, deleteRecord, updateRecord }) {
         />
       </section>
 
-      <button className="detail-delete-button" onClick={deleteRecord} aria-label="この記録を削除する" />
+      <button
+        className="detail-delete-button"
+        onClick={() => {
+          if (window.confirm("この記録を削除しますか？\n写真やメモも一緒に削除されます。")) {
+            deleteRecord();
+          }
+        }}
+        aria-label="この記録を削除する"
+      />
     </section>
   );
 }
@@ -1106,14 +1136,17 @@ function HistoryList({ history }) {
 function HowTo() {
   return (
     <div className="howto">
-      <h3>■遊び方</h3>
-      <p>1.「カードを引く」を押してお題をゲット<br />2. 出てきたお題にチャレンジしよう<br />3. 終わったら次のカードへ！</p>
+      <h3>■基本の流れ</h3>
+      <p>1.「カードを引く」を押すとカードが登場<br />2. カードをタップしてめくり、お題をゲット<br />3. お題にチャレンジしよう<br />4. できたら「実行する！」で履歴に記録</p>
+
+      <h3>■カードの選び方</h3>
+      <p>・カードを左右にスワイプすると別のお題を選べる<br />・「カードを引き直す」でランダムに引き直せる</p>
 
       <h3>■カードを追加</h3>
       <p>・「カードを追加」から好きなお題を登録できる<br />・入力したお題は自動で英語に翻訳される<br />・追加したカードもランダムで出てくるようになる</p>
 
-      <h3>■その他の機能</h3>
-      <p>・「履歴を見る」：これまで実行したカードを確認できる<br />・「ホーム」：メイン画面に戻れる</p>
+      <h3>■履歴</h3>
+      <p>・右上の時計マークから実行したカードを見られる<br />・履歴をタップすると写真やメモを残せる<br />・履歴を左にスワイプすると削除できる</p>
     </div>
   );
 }

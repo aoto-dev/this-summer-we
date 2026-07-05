@@ -159,6 +159,10 @@ button:active:not(:disabled) {
   background: linear-gradient(135deg, #0c70e5 0%, #087be5 48%, #0066d7 100%);
 }
 
+.home-main-button:disabled {
+  opacity: 0.6;
+}
+
 .add-button {
   color: #0874d7;
   border-color: rgba(255, 255, 255, 0.94);
@@ -595,6 +599,16 @@ button:active:not(:disabled) {
 
 .execute-button:disabled {
   opacity: 0.55;
+}
+
+.execute-button.is-done {
+  opacity: 1;
+  color: #f4438d;
+  border-color: rgba(244, 67, 141, 0.5);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 10px 18px rgba(124, 20, 74, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.62);
 }
 
 .execute-button:active:not(:disabled) {
@@ -1181,7 +1195,7 @@ button:active:not(:disabled) {
 
 .detail-photo-empty small {
   color: #1676cf;
-  font-size: clamp(8px, 2.4vw, 12px);
+  font-size: clamp(11px, 3vw, 13px);
   font-weight: 600;
   line-height: 1.35;
   letter-spacing: 0.05em;
@@ -1234,7 +1248,7 @@ button:active:not(:disabled) {
   resize: none;
   background: transparent;
   color: #0a3984;
-  font-size: clamp(7px, 2.8vw, 11px);
+  font-size: clamp(13px, 3.8vw, 15px);
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
@@ -1252,7 +1266,8 @@ button:active:not(:disabled) {
 
 .detail-place-input::placeholder,
 .detail-memo-input::placeholder {
-  color: rgba(21, 126, 211, 0.42);
+  color: rgba(21, 126, 211, 0.58);
+  font-size: clamp(11px, 3.2vw, 13px);
 }
 
 .detail-delete-button {
@@ -1292,7 +1307,7 @@ button:active:not(:disabled) {
 .add-shell .top-bar {
   justify-content: flex-start;
   flex-shrink: 0;
-  padding: 0 0 12px;
+  padding: 0 0 max(12px, 3dvh);
 }
 
 .add-shell .top-bar button {
@@ -1584,6 +1599,12 @@ button:active:not(:disabled) {
   box-shadow: 0 10px 24px rgba(47, 107, 147, 0.15);
   display: flex;
   flex-direction: column;
+}
+
+.add-shell .custom-list li.is-editing {
+  box-shadow:
+    0 0 0 3px rgba(24, 126, 239, 0.55),
+    0 10px 24px rgba(47, 107, 147, 0.15);
 }
 
 .custom-list strong,
