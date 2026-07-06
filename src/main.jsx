@@ -879,7 +879,7 @@ function CardScreen({
 
       <div className="card-action-stack">
         <button className="primary-button" onClick={redrawCard} disabled={isDrawing}>
-          <IconCards className="button-icon" size={26} stroke={2.2} aria-hidden="true" />
+          <IconCards className="button-icon" size={34} stroke={2.2} aria-hidden="true" />
           カードを引き直す
         </button>
         <button
@@ -891,7 +891,7 @@ function CardScreen({
           }}
           disabled={!isFlipped || hasExecuted}
         >
-          <Check size={28} strokeWidth={2.6} />
+          <Check size={34} strokeWidth={2.6} />
           {hasExecuted ? "記録した！" : "実行する！"}
         </button>
       </div>
