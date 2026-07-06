@@ -28,11 +28,125 @@ const JA_LINE_HINTS = {
   "base-7": ["かき氷を", "食べる"],
   "base-8": ["夏の写真を", "撮り合う"],
   "base-9": ["浴衣で", "出かける"],
-  "base-10": ["一番大きいポップコーンを", "買って映画を観る"]
+  "base-10": ["一番大きいポップコーンを", "買って映画を観る"],
+  "spring-10": ["公園で", "シャボン玉をする"],
+  "autumn-5": ["秋の味覚を", "食べ比べる"],
+  "autumn-6": ["温かい飲み物を", "買いに行く"],
+  "autumn-7": ["落ち葉を踏んで", "散歩する"],
+  "winter-2": ["イルミネーションを", "見に行く"],
+  "winter-5": ["こたつで", "みかんを食べる"],
+  "winter-8": ["手袋や", "マフラーを選ぶ"],
+  "winter-9": ["クリスマスの", "映画を観る"]
 };
 
-const STORAGE_KEY = "summer-card-app-v2";
+const SPRING_CARDS = [
+  { id: "spring-1", ja: "お花見をする", en: "Go see the cherry blossoms." },
+  { id: "spring-2", ja: "桜の写真を撮り合う", en: "Take cherry blossom photos of each other." },
+  { id: "spring-3", ja: "いちご狩りに行く", en: "Go strawberry picking." },
+  { id: "spring-4", ja: "春服を買いに行く", en: "Go shopping for spring clothes." },
+  { id: "spring-5", ja: "河川敷でお弁当を食べる", en: "Eat a bento by the riverside." },
+  { id: "spring-6", ja: "菜の花畑を見に行く", en: "Go see a field of rape blossoms." },
+  { id: "spring-7", ja: "桜餅を食べる", en: "Eat sakura mochi." },
+  { id: "spring-8", ja: "朝の散歩をする", en: "Take a morning walk." },
+  { id: "spring-9", ja: "春っぽい曲を1曲ずつ流す", en: "Play one spring song each." },
+  { id: "spring-10", ja: "公園でシャボン玉をする", en: "Blow soap bubbles in the park." }
+];
+
+const AUTUMN_CARDS = [
+  { id: "autumn-1", ja: "紅葉を見に行く", en: "Go see the autumn leaves." },
+  { id: "autumn-2", ja: "焼き芋を食べる", en: "Eat a roasted sweet potato." },
+  { id: "autumn-3", ja: "お月見をする", en: "Watch the harvest moon." },
+  { id: "autumn-4", ja: "コスモス畑に行く", en: "Go to a cosmos flower field." },
+  { id: "autumn-5", ja: "秋の味覚を食べ比べる", en: "Taste-test autumn foods." },
+  { id: "autumn-6", ja: "温かい飲み物を買いに行く", en: "Go buy a warm drink." },
+  { id: "autumn-7", ja: "落ち葉を踏んで散歩する", en: "Walk on the fallen leaves." },
+  { id: "autumn-8", ja: "秋の夕焼けを眺める", en: "Watch the autumn sunset." },
+  { id: "autumn-9", ja: "読書の秋を楽しむ", en: "Read a book together." },
+  { id: "autumn-10", ja: "秋っぽい曲を1曲ずつ流す", en: "Play one autumn song each." }
+];
+
+const WINTER_CARDS = [
+  { id: "winter-1", ja: "温泉に行ってみる", en: "Go to a hot spring." },
+  { id: "winter-2", ja: "イルミネーションを見に行く", en: "Go see the winter illuminations." },
+  { id: "winter-3", ja: "温かい鍋を食べる", en: "Eat a warm hot pot." },
+  { id: "winter-4", ja: "初詣に行く", en: "Visit a shrine for the new year." },
+  { id: "winter-5", ja: "こたつでみかんを食べる", en: "Eat mikan under the kotatsu." },
+  { id: "winter-6", ja: "ホットチョコを飲む", en: "Drink hot chocolate." },
+  { id: "winter-7", ja: "冬の星空を見る", en: "Look at the winter night sky." },
+  { id: "winter-8", ja: "手袋やマフラーを選ぶ", en: "Pick out gloves and a scarf." },
+  { id: "winter-9", ja: "クリスマスの映画を観る", en: "Watch a Christmas movie." },
+  { id: "winter-10", ja: "冬っぽい曲を1曲ずつ流す", en: "Play one winter song each." }
+];
+
+const SEASON_ORDER = ["spring", "summer", "autumn", "winter"];
+
+const SEASONS = {
+  spring: {
+    label: "春",
+    emoji: "🌸",
+    cards: SPRING_CARDS,
+    // 画像が未配置でもグラデーションで自然に見えるよう2層背景にする
+    fallback: "linear-gradient(180deg, #ffe3ec 0%, #fff0f5 48%, #ffdbe7 100%)",
+    bg: {
+      home: "url('/haru-home.png')",
+      card: "url('/haru-card.png')",
+      add: "url('/haru-add.png')",
+      history: "url('/haru-history.png')",
+      historyDetail: "url('/haru-history-detail.png')"
+    }
+  },
+  summer: {
+    label: "夏",
+    emoji: "☀️",
+    cards: INITIAL_CARDS,
+    bg: {
+      home: "url('/背景画像２.png')",
+      card: "url('/カード選択背景.png')",
+      add: "url('/背景画像４.png')",
+      history: "url('/履歴背景.png')",
+      historyDetail: "url('/履歴詳細.png')"
+    }
+  },
+  autumn: {
+    label: "秋",
+    emoji: "🍁",
+    cards: AUTUMN_CARDS,
+    fallback: "linear-gradient(180deg, #ffe7c7 0%, #fff3e0 48%, #ffdfba 100%)",
+    bg: {
+      home: "url('/aki-home.png')",
+      card: "url('/aki-card.png')",
+      add: "url('/aki-add.png')",
+      history: "url('/aki-history.png')",
+      historyDetail: "url('/aki-history-detail.png')"
+    }
+  },
+  winter: {
+    label: "冬",
+    emoji: "❄️",
+    cards: WINTER_CARDS,
+    fallback: "linear-gradient(180deg, #dfe8fb 0%, #eef3fd 48%, #d8e2f8 100%)",
+    bg: {
+      home: "url('/fuyu-home.png')",
+      card: "url('/fuyu-card.png')",
+      add: "url('/fuyu-add.png')",
+      history: "url('/fuyu-history.png')",
+      historyDetail: "url('/fuyu-history-detail.png')"
+    }
+  }
+};
+
+function defaultCardsBySeason() {
+  return {
+    spring: SEASONS.spring.cards,
+    summer: SEASONS.summer.cards,
+    autumn: SEASONS.autumn.cards,
+    winter: SEASONS.winter.cards
+  };
+}
+
+const STORAGE_KEY = "summer-card-app-v3";
 const OLD_STORAGE_KEY = "summer-card-app-v1";
+const V2_STORAGE_KEY = "summer-card-app-v2";
 const PRELOAD_IMAGES = [
   "/背景画像２.png",
   "/カード選択背景.png",
@@ -45,21 +159,49 @@ const PRELOAD_IMAGES = [
   "/貝殻.png"
 ];
 
+function normalizeCardsBySeason(source) {
+  const base = defaultCardsBySeason();
+  if (source && typeof source === "object") {
+    for (const key of SEASON_ORDER) {
+      if (Array.isArray(source[key])) base[key] = source[key];
+    }
+  }
+  return base;
+}
+
 function loadState() {
   try {
     localStorage.removeItem(OLD_STORAGE_KEY);
+
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!saved) return null;
-    const savedCards = Array.isArray(saved.cards)
-      ? saved.cards
-      : [...INITIAL_CARDS, ...(Array.isArray(saved.customCards) ? saved.customCards : [])];
-    return {
-      currentId: typeof saved.currentId === "string" ? saved.currentId : null,
-      currentCardIndex: Number.isInteger(saved.currentCardIndex) ? saved.currentCardIndex : 0,
-      isFlipped: Boolean(saved.isFlipped),
-      cards: savedCards,
-      history: Array.isArray(saved.history) ? saved.history.filter((item) => item.executedAt) : []
-    };
+    if (saved) {
+      return {
+        season: SEASON_ORDER.includes(saved.season) ? saved.season : "summer",
+        currentId: typeof saved.currentId === "string" ? saved.currentId : null,
+        currentCardIndex: Number.isInteger(saved.currentCardIndex) ? saved.currentCardIndex : 0,
+        isFlipped: Boolean(saved.isFlipped),
+        cardsBySeason: normalizeCardsBySeason(saved.cardsBySeason),
+        history: Array.isArray(saved.history) ? saved.history.filter((item) => item.executedAt) : []
+      };
+    }
+
+    // 旧バージョン（夏のみ）からの移行
+    const legacy = JSON.parse(localStorage.getItem(V2_STORAGE_KEY));
+    if (legacy) {
+      const legacyCards = Array.isArray(legacy.cards)
+        ? legacy.cards
+        : [...INITIAL_CARDS, ...(Array.isArray(legacy.customCards) ? legacy.customCards : [])];
+      return {
+        season: "summer",
+        currentId: typeof legacy.currentId === "string" ? legacy.currentId : null,
+        currentCardIndex: Number.isInteger(legacy.currentCardIndex) ? legacy.currentCardIndex : 0,
+        isFlipped: Boolean(legacy.isFlipped),
+        cardsBySeason: { ...defaultCardsBySeason(), summer: legacyCards },
+        history: Array.isArray(legacy.history) ? legacy.history.filter((item) => item.executedAt) : []
+      };
+    }
+
+    return null;
   } catch {
     return null;
   }
@@ -175,16 +317,25 @@ async function compressImageFile(file) {
 function App() {
   const initial = loadState();
   const [screen, setScreen] = useState("home");
+  const [season, setSeason] = useState(initial?.season ?? "summer");
   const [currentId, setCurrentId] = useState(initial?.currentId ?? null);
   const [currentCardIndex, setCurrentCardIndex] = useState(initial?.currentCardIndex ?? 0);
   const [isFlipped, setIsFlipped] = useState(initial?.isFlipped ?? false);
-  const [cards, setCards] = useState(initial?.cards ?? INITIAL_CARDS);
+  const [cardsBySeason, setCardsBySeason] = useState(initial?.cardsBySeason ?? defaultCardsBySeason());
   const [history, setHistory] = useState(initial?.history ?? []);
   const [selectedHistoryIndex, setSelectedHistoryIndex] = useState(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isScreenTransitioning, setIsScreenTransitioning] = useState(false);
   const [modal, setModal] = useState(null);
   const screenTransitionTimer = useRef(null);
+
+  const cards = cardsBySeason[season] ?? [];
+  const setCards = (updater) =>
+    setCardsBySeason((prev) => {
+      const current = prev[season] ?? [];
+      const next = typeof updater === "function" ? updater(current) : updater;
+      return { ...prev, [season]: next };
+    });
 
   const currentCard = cards[currentCardIndex] ?? cards.find((card) => card.id === currentId) ?? null;
   const recentIds = useMemo(() => history.map((item) => item.id), [history]);
@@ -197,15 +348,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const backgrounds = {
-      home: "url('/背景画像２.png')",
-      card: "url('/カード選択背景.png')",
-      add: "url('/背景画像４.png')",
-      history: "url('/履歴背景.png')",
-      historyDetail: "url('/履歴詳細.png')"
-    };
-    document.documentElement.style.setProperty("--app-bg", backgrounds[screen] ?? backgrounds.home);
-  }, [screen]);
+    const seasonConfig = SEASONS[season] ?? SEASONS.summer;
+    const image = seasonConfig.bg[screen] ?? seasonConfig.bg.home;
+    // 画像がまだ用意されていない季節でもグラデーションで表示が破綻しないようにする
+    const layers = seasonConfig.fallback ? `${image}, ${seasonConfig.fallback}` : image;
+    document.documentElement.style.setProperty("--app-bg", layers);
+    document.documentElement.dataset.season = season;
+  }, [screen, season]);
 
   useEffect(() => {
     const timeoutIds = new Set();
@@ -267,11 +416,14 @@ function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ currentId, currentCardIndex, isFlipped, cards, history }));
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ season, currentId, currentCardIndex, isFlipped, cardsBySeason, history })
+      );
     } catch (error) {
       console.warn("保存容量の上限に達したため、一部の変更を保存できませんでした。", error);
     }
-  }, [currentId, currentCardIndex, isFlipped, cards, history]);
+  }, [season, currentId, currentCardIndex, isFlipped, cardsBySeason, history]);
 
   useEffect(() => {
     return () => {
@@ -293,7 +445,7 @@ function App() {
       setCurrentCardIndex(nextIndex);
       setCurrentId(cards[nextIndex].id);
     }
-  }, [cards, currentCardIndex]);
+  }, [cardsBySeason, season, currentCardIndex]);
 
   const transitionToScreen = (nextScreen, beforeSwitch) => {
     if (screenTransitionTimer.current) {
@@ -372,6 +524,14 @@ function App() {
     });
   };
 
+  const changeSeason = (nextSeason) => {
+    if (nextSeason === season || !SEASON_ORDER.includes(nextSeason)) return;
+    setSeason(nextSeason);
+    setCurrentId(null);
+    setCurrentCardIndex(0);
+    setIsFlipped(false);
+  };
+
   const addCard = (card) => {
     setCards((items) => [{ ...card, id: crypto.randomUUID() }, ...items]);
   };
@@ -415,6 +575,8 @@ function App() {
             isDrawing={isDrawing}
             isFading={false}
             hasCards={cards.length > 0}
+            season={season}
+            changeSeason={changeSeason}
             drawCard={drawCard}
             goAdd={() => transitionToScreen("add")}
             openHistory={() => transitionToScreen("history")}
@@ -484,15 +646,53 @@ function modalTitle(modal) {
   return { howto: "遊び方" }[modal];
 }
 
-function HomeScreen({ isDrawing, isFading, hasCards, drawCard, goAdd, openHistory, goHome, openHowTo }) {
+function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawCard, goAdd, openHistory, goHome, openHowTo }) {
+  const [isSeasonOpen, setIsSeasonOpen] = useState(false);
+
+  const selectSeason = (key) => {
+    changeSeason(key);
+    setIsSeasonOpen(false);
+  };
+
   return (
     <section className={`home-screen ${isFading ? "fade-out" : ""}`} aria-label="ホーム">
-      <button className="card-top-button card-back-button" onClick={openHowTo} aria-label="遊び方">
-        <CircleHelp size={30} strokeWidth={2.1} />
+      <button
+        className="card-top-button card-back-button season-toggle"
+        onClick={() => setIsSeasonOpen((value) => !value)}
+        aria-label={`季節を変える（いまは${SEASONS[season].label}）`}
+        aria-expanded={isSeasonOpen}
+      >
+        <span className="season-toggle-emoji" aria-hidden="true">{SEASONS[season].emoji}</span>
       </button>
       <button className="card-top-button card-history-button" onClick={openHistory} aria-label="履歴を見る">
         <History size={30} strokeWidth={2.1} />
       </button>
+      {isSeasonOpen && (
+        <>
+          <div className="season-backdrop" onClick={() => setIsSeasonOpen(false)} aria-hidden="true" />
+          <div className="season-switch" role="tablist" aria-label="季節を選ぶ">
+            {SEASON_ORDER.map((key) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={season === key}
+                className={`season-tab ${season === key ? "is-active" : ""}`}
+                onClick={() => selectSeason(key)}
+              >
+                <span className="season-emoji" aria-hidden="true">{SEASONS[key].emoji}</span>
+                <span className="season-name">{SEASONS[key].label}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+      {season !== "summer" && (
+        <div className="home-title">
+          <p>ドラマみたいな場面を日常に。</p>
+          <h1>この{SEASONS[season].label}、<br />私たちは、</h1>
+        </div>
+      )}
       <div className="home-actions">
         <button className="home-main-button draw-button pressable" aria-label="カードを引く" onClick={drawCard} disabled={isDrawing || !hasCards}>
           <IconCards className="button-icon" size={34} stroke={2.2} aria-hidden="true" />
@@ -1138,6 +1338,9 @@ function HowTo() {
     <div className="howto">
       <h3>■基本の流れ</h3>
       <p>1.「カードを引く」を押すとカードが登場<br />2. カードをタップしてめくり、お題をゲット<br />3. お題にチャレンジしよう<br />4. できたら「実行する！」で履歴に記録</p>
+
+      <h3>■季節の切り替え</h3>
+      <p>・ホーム上部で春・夏・秋・冬を選べる<br />・季節ごとに画面の雰囲気とお題カードが変わる<br />・カードの追加は選んでいる季節に登録される</p>
 
       <h3>■カードの選び方</h3>
       <p>・カードを左右にスワイプすると別のお題を選べる<br />・「カードを引き直す」でランダムに引き直せる</p>
