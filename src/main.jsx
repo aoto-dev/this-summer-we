@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import TinderCard from "react-tinder-card";
 import { Calendar, Check, ChevronLeft, ChevronRight, CircleHelp, History, House, Image, Pencil, Plus, Trash2, X } from "lucide-react";
@@ -28,7 +28,7 @@ const JA_LINE_HINTS = {
   "base-7": ["かき氷を", "食べる"],
   "base-8": ["夏の写真を", "撮り合う"],
   "base-9": ["浴衣で", "出かける"],
-  "base-10": ["一番大きいポップコーンを", "買って映画を観る"],
+  "base-10": ["一番大きい", "ポップコーンを", "買って映画を観る"],
   "spring-10": ["公園で", "シャボン玉をする"],
   "autumn-5": ["秋の味覚を", "食べ比べる"],
   "autumn-6": ["温かい飲み物を", "買いに行く"],
@@ -729,10 +729,54 @@ function CardScreen({
   const tapStartRef = useRef(null);
   const pendingSwipeRef = useRef(0);
   const swipeTimerRef = useRef(null);
+  const jaAreaRef = useRef(null);
+  const jaTextRef = useRef(null);
+  const enAreaRef = useRef(null);
+  const enTextRef = useRef(null);
 
   useEffect(() => {
     setHasExecuted(false);
   }, [card?.id, isFlipped]);
+
+  const jaText = card?.ja ?? "";
+  const enText = card?.en ?? "";
+
+  // お題が長くても見切れないよう、カード内の実寸に合わせて文字サイズを自動調整する
+  useLayoutEffect(() => {
+    const pairs = [
+      [jaAreaRef.current, jaTextRef.current, 12],
+      [enAreaRef.current, enTextRef.current, 11]
+    ].filter(([area, text]) => area && text);
+    if (!pairs.length) return;
+
+    const fitPair = (area, text, minSize) => {
+      const ratioOf = () => {
+        const availW = text.clientWidth;
+        const availH = area.clientHeight;
+        const contentW = text.scrollWidth;
+        const contentH = text.scrollHeight;
+        if (!availW || !availH || !contentW || !contentH) return 1;
+        return Math.min(availW / contentW, availH / contentH, 1);
+      };
+
+      text.style.fontSize = "";
+      let ratio = ratioOf();
+      if (ratio >= 1) return;
+      // 端数まで確実に収めるため、比例縮小を2回かける
+      for (let i = 0; i < 2 && ratio < 1; i += 1) {
+        const base = parseFloat(getComputedStyle(text).fontSize) || minSize;
+        text.style.fontSize = `${Math.max(base * ratio * 0.97, minSize)}px`;
+        ratio = ratioOf();
+      }
+    };
+
+    const fitAll = () => pairs.forEach(([area, text, minSize]) => fitPair(area, text, minSize));
+
+    fitAll();
+    const observer = new ResizeObserver(fitAll);
+    pairs.forEach(([area]) => observer.observe(area));
+    return () => observer.disconnect();
+  }, [jaText, enText]);
 
   if (!card) {
     return (
@@ -862,15 +906,15 @@ function CardScreen({
                 <line x1="22" y1="14" x2="28" y2="26" />
                 <line x1="42" y1="6" x2="43" y2="20" />
               </svg>
-              <div className="card-ja-area">
-                <h1 className="jaText">
+              <div className="card-ja-area" ref={jaAreaRef}>
+                <h1 className="jaText" ref={jaTextRef}>
                   {jaLines.map((line) => (
                     <span key={line}>{line}</span>
                   ))}
                 </h1>
               </div>
-              <div className="card-en-area">
-                <p className="enText">{card.en}</p>
+              <div className="card-en-area" ref={enAreaRef}>
+                <p className="enText" ref={enTextRef}>{card.en}</p>
               </div>
             </section>
           </div>

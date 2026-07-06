@@ -578,6 +578,7 @@ button:active:not(:disabled) {
   overflow-wrap: break-word;
   line-break: strict;
   text-align: center;
+  width: 100%;
   max-width: 240px;
   margin: 0 auto;
   line-height: 1.45;
@@ -603,6 +604,7 @@ button:active:not(:disabled) {
   font-weight: 400;
   letter-spacing: 0.03em;
   text-align: center;
+  width: 100%;
   max-width: 240px;
   margin: 0 auto;
   line-height: 1.35;
