@@ -216,7 +216,7 @@ button:active:not(:disabled) {
 .season-switch {
   position: absolute;
   top: max(24px, env(safe-area-inset-top));
-  left: 82px;
+  left: 88px;
   z-index: 5;
   display: flex;
   align-items: stretch;
@@ -311,7 +311,7 @@ button:active:not(:disabled) {
   }
 
   .season-switch {
-    left: 74px;
+    left: 80px;
     gap: 0;
     min-height: 52px;
     padding: 5px 4px 4px 7px;
