@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import TinderCard from "react-tinder-card";
-import { Calendar, Check, ChevronLeft, ChevronRight, CircleHelp, History, House, Image, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Calendar, Check, ChevronLeft, ChevronRight, CircleHelp, Flower2, History, House, Image, Leaf, Pencil, Plus, Snowflake, Sun, Trash2, X } from "lucide-react";
 import { IconCards } from "@tabler/icons-react";
 import "./styles.css";
 
@@ -657,12 +657,12 @@ function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawC
   return (
     <section className={`home-screen ${isFading ? "fade-out" : ""}`} aria-label="ホーム">
       <button
-        className="card-top-button card-back-button season-toggle"
+        className={`card-top-button card-back-button season-toggle season-toggle--${season}`}
         onClick={() => setIsSeasonOpen((value) => !value)}
         aria-label={`季節を変える（いまは${SEASONS[season].label}）`}
         aria-expanded={isSeasonOpen}
       >
-        <span className="season-toggle-emoji" aria-hidden="true">{SEASONS[season].emoji}</span>
+        <SeasonIcon season={season} className="season-toggle-icon" />
       </button>
       <button className="card-top-button card-history-button" onClick={openHistory} aria-label="履歴を見る">
         <History size={30} strokeWidth={2.1} />
@@ -680,7 +680,7 @@ function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawC
                 className={`season-tab ${season === key ? "is-active" : ""}`}
                 onClick={() => selectSeason(key)}
               >
-                <span className="season-emoji" aria-hidden="true">{SEASONS[key].emoji}</span>
+                <SeasonIcon season={key} className="season-icon" />
                 <span className="season-name">{SEASONS[key].label}</span>
               </button>
             ))}
@@ -707,6 +707,15 @@ function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawC
       </div>
     </section>
   );
+}
+
+function SeasonIcon({ season, className }) {
+  const props = { className, size: 25, strokeWidth: 1.65, "aria-hidden": true };
+
+  if (season === "spring") return <Flower2 {...props} />;
+  if (season === "autumn") return <Leaf {...props} />;
+  if (season === "winter") return <Snowflake {...props} />;
+  return <Sun {...props} />;
 }
 
 function CardScreen({
