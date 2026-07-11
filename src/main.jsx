@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import TinderCard from "react-tinder-card";
-import { Calendar, Check, ChevronLeft, ChevronRight, CircleHelp, Flower2, History, House, Image, Leaf, Pencil, Plus, Snowflake, Sun, Trash2, X } from "lucide-react";
+import { Calendar, Check, ChevronLeft, ChevronRight, CircleHelp, History, House, Image, Pencil, Plus, Trash2, X } from "lucide-react";
 import { IconCards } from "@tabler/icons-react";
 import "./styles.css";
 
@@ -710,12 +710,67 @@ function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawC
 }
 
 function SeasonIcon({ season, className }) {
-  const props = { className, size: 25, strokeWidth: 1.65, "aria-hidden": true };
+  const svgProps = {
+    className: `${className} season-icon-art season-icon-art--${season}`,
+    viewBox: "0 0 32 32",
+    "aria-hidden": true
+  };
 
-  if (season === "spring") return <Flower2 {...props} />;
-  if (season === "autumn") return <Leaf {...props} />;
-  if (season === "winter") return <Snowflake {...props} />;
-  return <Sun {...props} />;
+  if (season === "spring") {
+    return (
+      <svg {...svgProps}>
+        <g fill="#f3a6b7">
+          <ellipse cx="16" cy="8.2" rx="5.1" ry="7" />
+          <ellipse cx="23.4" cy="13.5" rx="5.1" ry="7" transform="rotate(72 23.4 13.5)" />
+          <ellipse cx="20.6" cy="22.1" rx="5.1" ry="7" transform="rotate(144 20.6 22.1)" />
+          <ellipse cx="11.4" cy="22.1" rx="5.1" ry="7" transform="rotate(216 11.4 22.1)" />
+          <ellipse cx="8.6" cy="13.5" rx="5.1" ry="7" transform="rotate(288 8.6 13.5)" />
+        </g>
+        <circle cx="16" cy="16" r="3.1" fill="#fff" />
+        <circle cx="16" cy="10.7" r="1.25" fill="#fff" />
+        <circle cx="21" cy="14.4" r="1.25" fill="#fff" />
+        <circle cx="19.1" cy="20.3" r="1.25" fill="#fff" />
+        <circle cx="12.9" cy="20.3" r="1.25" fill="#fff" />
+        <circle cx="11" cy="14.4" r="1.25" fill="#fff" />
+      </svg>
+    );
+  }
+
+  if (season === "autumn") {
+    return (
+      <svg {...svgProps}>
+        <path
+          fill="#ee6235"
+          d="M15.3 2.2l2.2 5.1 3-2-1 5.8 4.2-1.1-2 4 5.7 1.5-4 3.3 2.2 2.1-7.7 2.2.8 6.9h-2.4l.4-6.9-7.7-2.2 2.2-2.1-4-3.3 5.7-1.5-2-4 4.2 1.1-1-5.8 3 2z"
+        />
+      </svg>
+    );
+  }
+
+  if (season === "winter") {
+    return (
+      <svg {...svgProps} fill="none" stroke="#8fc4e8" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.1">
+        <path d="M16 2.5v27M4.3 9.2l23.4 13.6M4.3 22.8L27.7 9.2" />
+        <path d="M12.7 5.6L16 8.9l3.3-3.3M12.7 26.4L16 23.1l3.3 3.3M5.8 13.5l4.5-1.2-1.2-4.5M26.2 18.5l-4.5 1.2 1.2 4.5M9.1 24.2l1.2-4.5-4.5-1.2M22.9 7.8l-1.2 4.5 4.5 1.2" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...svgProps}>
+      <g fill="#ff7a2f">
+        <circle cx="16" cy="4.8" r="4.3" />
+        <circle cx="23.9" cy="8.1" r="4.3" />
+        <circle cx="27.2" cy="16" r="4.3" />
+        <circle cx="23.9" cy="23.9" r="4.3" />
+        <circle cx="16" cy="27.2" r="4.3" />
+        <circle cx="8.1" cy="23.9" r="4.3" />
+        <circle cx="4.8" cy="16" r="4.3" />
+        <circle cx="8.1" cy="8.1" r="4.3" />
+      </g>
+      <circle cx="16" cy="16" r="10.1" fill="#ffc338" />
+    </svg>
+  );
 }
 
 function CardScreen({
