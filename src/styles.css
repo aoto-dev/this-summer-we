@@ -316,10 +316,16 @@ button:active:not(:disabled) {
   color: #fff;
 }
 
-/* 絵文字は仮置き。後で透過画像に差し替える */
+/* 透過画像が無い季節向けの絵文字フォールバック */
 .season-option-art {
   font-size: clamp(44px, 13vw, 54px);
   line-height: 1.15;
+}
+
+.season-option-img {
+  width: clamp(64px, 19vw, 86px);
+  height: clamp(64px, 19vw, 86px);
+  object-fit: contain;
 }
 
 .season-option-name {

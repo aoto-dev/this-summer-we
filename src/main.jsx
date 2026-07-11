@@ -84,6 +84,7 @@ const SEASONS = {
   spring: {
     label: "春",
     emoji: "🌸",
+    icon: "/haru-icon.png",
     cards: SPRING_CARDS,
     // 画像が未配置でもグラデーションで自然に見えるよう2層背景にする
     fallback: "linear-gradient(180deg, #ffe3ec 0%, #fff0f5 48%, #ffdbe7 100%)",
@@ -98,6 +99,7 @@ const SEASONS = {
   summer: {
     label: "夏",
     emoji: "☀️",
+    icon: "/natsu-icon.png",
     cards: INITIAL_CARDS,
     bg: {
       home: "url('/背景画像２.png')",
@@ -110,6 +112,7 @@ const SEASONS = {
   autumn: {
     label: "秋",
     emoji: "🍁",
+    icon: "/aki-icon.png",
     cards: AUTUMN_CARDS,
     fallback: "linear-gradient(180deg, #ffe7c7 0%, #fff3e0 48%, #ffdfba 100%)",
     bg: {
@@ -123,6 +126,7 @@ const SEASONS = {
   winter: {
     label: "冬",
     emoji: "❄️",
+    icon: "/fuyu-icon.png",
     cards: WINTER_CARDS,
     fallback: "linear-gradient(180deg, #dfe8fb 0%, #eef3fd 48%, #d8e2f8 100%)",
     bg: {
@@ -649,6 +653,8 @@ function modalTitle(modal) {
 function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawCard, goAdd, openHistory, goHome, openHowTo }) {
   const [isSeasonOpen, setIsSeasonOpen] = useState(false);
   const [pendingSeason, setPendingSeason] = useState(season);
+  // 透過画像が未配置の季節は絵文字で代用する
+  const [failedSeasonIcons, setFailedSeasonIcons] = useState({});
 
   const openSeasonPicker = () => {
     setPendingSeason(season);
@@ -700,8 +706,17 @@ function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawC
                       <Check size={17} strokeWidth={3.2} />
                     </span>
                   )}
-                  {/* TODO: 絵文字は後で透過画像に差し替える */}
-                  <span className="season-option-art" aria-hidden="true">{SEASONS[key].emoji}</span>
+                  {failedSeasonIcons[key] ? (
+                    <span className="season-option-art" aria-hidden="true">{SEASONS[key].emoji}</span>
+                  ) : (
+                    <img
+                      className="season-option-img"
+                      src={SEASONS[key].icon}
+                      alt=""
+                      aria-hidden="true"
+                      onError={() => setFailedSeasonIcons((prev) => ({ ...prev, [key]: true }))}
+                    />
+                  )}
                   <span className="season-option-name">{SEASONS[key].label}</span>
                 </button>
               ))}
