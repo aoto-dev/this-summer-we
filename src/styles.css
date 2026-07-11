@@ -12,6 +12,8 @@
   --accent-soft: #9adeff;
   --grad-primary: linear-gradient(135deg, #0c70e5 0%, #087be5 48%, #0066d7 100%);
   --grad-secondary: linear-gradient(135deg, #f94b93 0%, #ff62aa 100%);
+  --draw-grad: linear-gradient(145deg, #18a2ff 0%, #087df1 46%, #0053c7 100%);
+  --draw-shade-rgb: 0, 67, 157;
   --bg-fallback: #c8f1ff;
   --card-accent: #65c7ee;
   --card-back: url("/カード裏面.png");
@@ -34,6 +36,8 @@
   --accent-soft: #f6c3d3;
   --grad-primary: linear-gradient(135deg, #f186b0 0%, #ec6fa0 50%, #e35b93 100%);
   --grad-secondary: linear-gradient(135deg, #57bd7a 0%, #3da862 100%);
+  --draw-grad: linear-gradient(145deg, #ff96be 0%, #ef659c 46%, #d34580 100%);
+  --draw-shade-rgb: 168, 44, 99;
   --bg-fallback: #ffe6ef;
   --card-accent: #f0a5c0;
   --card-back: url("/haru-card-back.png"), url("/カード裏面.png");
@@ -49,6 +53,8 @@
   --accent-soft: #f0cda4;
   --grad-primary: linear-gradient(135deg, #ec8a3a 0%, #e0741f 50%, #cf6116 100%);
   --grad-secondary: linear-gradient(135deg, #e0554f 0%, #c8423d 100%);
+  --draw-grad: linear-gradient(145deg, #ffa04d 0%, #e77620 46%, #c05a12 100%);
+  --draw-shade-rgb: 148, 68, 10;
   --bg-fallback: #ffe9d2;
   --card-accent: #ecab62;
   --card-back: url("/aki-card-back.png"), url("/カード裏面.png");
@@ -64,6 +70,8 @@
   --accent-soft: #c3d2f2;
   --grad-primary: linear-gradient(135deg, #5a86e0 0%, #4066c9 50%, #2f52b0 100%);
   --grad-secondary: linear-gradient(135deg, #f94b93 0%, #ff62aa 100%);
+  --draw-grad: linear-gradient(145deg, #82a8f2 0%, #4d71d5 46%, #2c4da8 100%);
+  --draw-shade-rgb: 33, 58, 128;
   --bg-fallback: #e7ecfb;
   --card-accent: #a3bdf0;
   --card-back: url("/fuyu-card-back.png"), url("/カード裏面.png");
@@ -423,31 +431,33 @@ button:active:not(:disabled) {
 .home-actions .draw-button {
   min-height: clamp(68px, 8.5dvh, 82px);
   padding: 15px 28px;
-  border: 4px solid rgba(255, 255, 255, 0.97);
+  border: 6px solid #fff;
   grid-template-columns: 48px minmax(0, 1fr) 30px;
   font-size: clamp(21px, 5.8vw, 25px);
   font-weight: 700;
   letter-spacing: 0.08em;
-  background: linear-gradient(145deg, #18a2ff 0%, #087df1 46%, #0053c7 100%);
+  background: var(--draw-grad);
   box-shadow:
-    0 16px 26px rgba(0, 67, 157, 0.44),
-    0 5px 0 rgba(0, 66, 163, 0.24),
-    0 0 16px rgba(255, 255, 255, 0.62),
+    0 16px 26px rgba(var(--draw-shade-rgb), 0.4),
+    0 5px 0 rgba(var(--draw-shade-rgb), 0.22),
+    0 0 30px rgba(255, 255, 255, 0.95),
+    0 0 12px rgba(255, 255, 255, 0.9),
     inset 0 3px 7px rgba(255, 255, 255, 0.26),
-    inset 0 -7px 11px rgba(0, 42, 137, 0.18);
+    inset 0 -7px 11px rgba(var(--draw-shade-rgb), 0.2);
 }
 
 .home-actions .draw-button:active:not(:disabled) {
   box-shadow:
-    0 8px 14px rgba(0, 67, 157, 0.34),
-    0 2px 0 rgba(0, 66, 163, 0.2),
-    0 0 11px rgba(255, 255, 255, 0.5),
+    0 8px 14px rgba(var(--draw-shade-rgb), 0.32),
+    0 2px 0 rgba(var(--draw-shade-rgb), 0.18),
+    0 0 20px rgba(255, 255, 255, 0.85),
+    0 0 8px rgba(255, 255, 255, 0.75),
     inset 0 2px 5px rgba(255, 255, 255, 0.22),
-    inset 0 -5px 9px rgba(0, 42, 137, 0.16);
+    inset 0 -5px 9px rgba(var(--draw-shade-rgb), 0.16);
 }
 
 .home-actions .draw-button span {
-  text-shadow: 0 2px 4px rgba(0, 47, 126, 0.32);
+  text-shadow: 0 2px 4px rgba(var(--draw-shade-rgb), 0.35);
 }
 
 .home-actions .draw-button .button-icon {
@@ -480,12 +490,15 @@ button:active:not(:disabled) {
   justify-self: center;
   grid-template-columns: 38px minmax(0, 1fr) 24px;
   gap: 6px;
-  border: 2px solid var(--accent);
+  border: 4px solid #fff;
+  background: rgba(255, 255, 255, 0.66);
   font-size: clamp(17px, 4.5vw, 19px);
   font-weight: 600;
   box-shadow:
     0 8px 16px rgba(20, 74, 124, 0.16),
-    inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+    0 0 22px rgba(255, 255, 255, 0.9),
+    0 0 9px rgba(255, 255, 255, 0.85),
+    inset 0 0 10px rgba(255, 255, 255, 0.7);
 }
 
 .home-actions .add-button .add-plus-icon {
