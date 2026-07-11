@@ -648,9 +648,15 @@ function modalTitle(modal) {
 
 function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawCard, goAdd, openHistory, goHome, openHowTo }) {
   const [isSeasonOpen, setIsSeasonOpen] = useState(false);
+  const [pendingSeason, setPendingSeason] = useState(season);
 
-  const selectSeason = (key) => {
-    changeSeason(key);
+  const openSeasonPicker = () => {
+    setPendingSeason(season);
+    setIsSeasonOpen(true);
+  };
+
+  const confirmSeason = () => {
+    changeSeason(pendingSeason);
     setIsSeasonOpen(false);
   };
 
@@ -658,7 +664,7 @@ function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawC
     <section className={`home-screen ${isFading ? "fade-out" : ""}`} aria-label="ホーム">
       <button
         className={`card-top-button card-back-button season-toggle season-toggle--${season}`}
-        onClick={() => setIsSeasonOpen((value) => !value)}
+        onClick={() => (isSeasonOpen ? setIsSeasonOpen(false) : openSeasonPicker())}
         aria-label={`季節を変える（いまは${SEASONS[season].label}）`}
         aria-expanded={isSeasonOpen}
       >
@@ -668,24 +674,41 @@ function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawC
         <History size={30} strokeWidth={2.1} />
       </button>
       {isSeasonOpen && (
-        <>
-          <div className="season-backdrop" onClick={() => setIsSeasonOpen(false)} aria-hidden="true" />
-          <div className="season-switch" role="tablist" aria-label="季節を選ぶ">
-            {SEASON_ORDER.map((key) => (
-              <button
-                key={key}
-                type="button"
-                role="tab"
-                aria-selected={season === key}
-                className={`season-tab ${season === key ? "is-active" : ""}`}
-                onClick={() => selectSeason(key)}
-              >
-                <SeasonIcon season={key} className="season-icon" />
-                <span className="season-name">{SEASONS[key].label}</span>
-              </button>
-            ))}
-          </div>
-        </>
+        <div className="season-modal-backdrop" role="presentation" onClick={() => setIsSeasonOpen(false)}>
+          <section
+            className="season-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="季節を選択"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button className="season-modal-close" onClick={() => setIsSeasonOpen(false)} aria-label="閉じる">
+              <X size={26} strokeWidth={2.4} />
+            </button>
+            <h2 className="season-modal-title">季節を選択してください</h2>
+            <div className="season-option-grid">
+              {SEASON_ORDER.map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  aria-pressed={pendingSeason === key}
+                  className={`season-option ${pendingSeason === key ? "is-selected" : ""}`}
+                  onClick={() => setPendingSeason(key)}
+                >
+                  {pendingSeason === key && (
+                    <span className="season-option-check" aria-hidden="true">
+                      <Check size={17} strokeWidth={3.2} />
+                    </span>
+                  )}
+                  {/* TODO: 絵文字は後で透過画像に差し替える */}
+                  <span className="season-option-art" aria-hidden="true">{SEASONS[key].emoji}</span>
+                  <span className="season-option-name">{SEASONS[key].label}</span>
+                </button>
+              ))}
+            </div>
+            <button className="season-confirm-button" onClick={confirmSeason}>変更する</button>
+          </section>
+        </div>
       )}
       {season !== "summer" && (
         <div className="home-title">

@@ -214,47 +214,42 @@ button:active:not(:disabled) {
   stroke-width: 1.65;
 }
 
-.season-backdrop {
+.season-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 4;
-  background: transparent;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(23, 48, 82, 0.34);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: seasonModalFade 0.18s ease-out both;
 }
 
-.season-switch {
-  position: absolute;
-  top: max(24px, env(safe-area-inset-top));
-  left: 88px;
-  z-index: 5;
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-  width: 202px;
-  height: auto;
-  min-height: 56px;
-  padding: 6px 6px 5px 8px;
-  border-radius: 25px;
-  background: rgba(255, 255, 255, 0.96);
-  filter: drop-shadow(0 7px 9px rgba(32, 90, 124, 0.15));
-  animation: seasonSwitchIn 0.16s ease-out both;
-}
-
-.season-switch::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -11px;
-  width: 13px;
-  height: 22px;
-  background: rgba(255, 255, 255, 0.96);
-  clip-path: polygon(100% 0, 100% 100%, 0 50%);
-  transform: translateY(-50%);
-}
-
-@keyframes seasonSwitchIn {
+@keyframes seasonModalFade {
   from {
     opacity: 0;
-    transform: translateX(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.season-modal {
+  position: relative;
+  width: min(400px, 100%);
+  padding: 30px 22px 26px;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 24px 48px rgba(13, 42, 84, 0.28);
+  animation: seasonModalPop 0.2s ease-out both;
+}
+
+@keyframes seasonModalPop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
   }
   to {
     opacity: 1;
@@ -262,70 +257,94 @@ button:active:not(:disabled) {
   }
 }
 
-.season-tab {
-  position: relative;
-  z-index: 1;
-  flex: 1 1 0;
-  min-width: 0;
-  height: auto;
-  min-height: 0;
-  padding: 2px 3px 3px;
-  border-radius: 16px;
+.season-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
   display: grid;
-  align-content: normal;
-  justify-items: center;
-  gap: 2px;
+  place-items: center;
+  border-radius: 50%;
   background: transparent;
-  color: #87949e;
-  line-height: 1;
+  color: #5c6b7c;
 }
 
-.season-icon {
-  width: 20px;
-  height: 20px;
-  transition: color 0.15s ease, filter 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
-}
-
-.season-tab:not(.is-active) .season-icon-art {
-  filter: grayscale(1);
-  opacity: 0.48;
-}
-
-.season-name {
-  position: relative;
-  padding-bottom: 7px;
-  font-size: 12px;
+.season-modal-title {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: clamp(18px, 5.2vw, 21px);
   font-weight: 700;
+  color: #24344c;
   letter-spacing: 0.04em;
 }
 
-.season-name::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -1px;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: currentColor;
-  opacity: 0;
-  transform: translateX(-50%) scale(0.45);
-  transition: opacity 0.18s ease, transform 0.18s ease;
+.season-option-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
 }
 
-.season-tab.is-active {
+.season-option {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 25px 10px 19px;
+  border: 2px solid #e3e9f2;
+  border-radius: 18px;
+  background: #fff;
+  color: #2c3c55;
+}
+
+.season-option.is-selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, #fff);
   color: var(--accent-strong);
 }
 
-.season-tab.is-active .season-icon {
-  filter: none;
-  opacity: 1;
-  transform: scale(1.06);
+.season-option-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 29px;
+  height: 29px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
 }
 
-.season-tab.is-active .season-name::after {
-  opacity: 1;
-  transform: translateX(-50%) scale(1);
+/* 絵文字は仮置き。後で透過画像に差し替える */
+.season-option-art {
+  font-size: clamp(44px, 13vw, 54px);
+  line-height: 1.15;
+}
+
+.season-option-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.season-confirm-button {
+  display: block;
+  width: min(280px, 86%);
+  min-height: 56px;
+  margin: 22px auto 0;
+  padding: 14px 20px;
+  border-radius: 999px;
+  background: var(--grad-primary);
+  color: #fff;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  box-shadow: 0 10px 20px rgba(var(--draw-shade-rgb), 0.3);
+}
+
+.season-confirm-button:active {
+  box-shadow: 0 5px 10px rgba(var(--draw-shade-rgb), 0.24);
 }
 
 @media (max-width: 359px) {
@@ -333,31 +352,6 @@ button:active:not(:disabled) {
     left: 12px;
     width: 52px;
     height: 52px;
-  }
-
-  .season-switch {
-    left: 80px;
-    gap: 0;
-    width: 178px;
-    height: auto;
-    min-height: 52px;
-    padding: 5px 4px 4px 6px;
-  }
-
-  .season-tab {
-    min-width: 0;
-    height: auto;
-    min-height: 0;
-    padding: 2px 2px 4px;
-  }
-
-  .season-icon {
-    width: 19px;
-    height: 19px;
-  }
-
-  .season-name {
-    font-size: 10px;
   }
 }
 
