@@ -85,6 +85,8 @@ const SEASONS = {
     label: "春",
     emoji: "🌸",
     icon: "/haru-icon.png",
+    // ホーム背景にタイトル文字が焼き込まれているためReact側のタイトルは出さない
+    titleInBg: true,
     cards: SPRING_CARDS,
     // 画像が未配置でもグラデーションで自然に見えるよう2層背景にする
     fallback: "linear-gradient(180deg, #ffe3ec 0%, #fff0f5 48%, #ffdbe7 100%)",
@@ -100,6 +102,7 @@ const SEASONS = {
     label: "夏",
     emoji: "☀️",
     icon: "/natsu-icon.png",
+    titleInBg: true,
     cards: INITIAL_CARDS,
     bg: {
       home: "url('/背景画像２.png')",
@@ -735,7 +738,7 @@ function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawC
           </section>
         </div>
       )}
-      {season !== "summer" && (
+      {!SEASONS[season].titleInBg && (
         <div className="home-title">
           <p>ドラマみたいな場面を日常に。</p>
           <h1>この{SEASONS[season].label}、<br />私たちは、</h1>
