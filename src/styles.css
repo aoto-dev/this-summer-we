@@ -222,7 +222,7 @@ button:active:not(:disabled) {
   align-items: stretch;
   gap: 0;
   min-height: 56px;
-  padding: 6px 7px 5px 9px;
+  padding: 6px 6px 5px 8px;
   border-radius: 25px;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 7px 18px rgba(32, 90, 124, 0.15);
@@ -253,8 +253,8 @@ button:active:not(:disabled) {
 }
 
 .season-tab {
-  min-width: 55px;
-  padding: 2px 5px 3px;
+  min-width: 47px;
+  padding: 2px 3px 3px;
   border-radius: 16px;
   display: grid;
   justify-items: center;
@@ -265,8 +265,8 @@ button:active:not(:disabled) {
 }
 
 .season-icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   transition: color 0.15s ease, transform 0.15s ease;
 }
 
@@ -314,17 +314,17 @@ button:active:not(:disabled) {
     left: 80px;
     gap: 0;
     min-height: 52px;
-    padding: 5px 4px 4px 7px;
+    padding: 5px 4px 4px 6px;
   }
 
   .season-tab {
-    min-width: 47px;
-    padding: 2px 3px 4px;
+    min-width: 42px;
+    padding: 2px 2px 4px;
   }
 
   .season-icon {
-    width: 21px;
-    height: 21px;
+    width: 19px;
+    height: 19px;
   }
 
   .season-name {
