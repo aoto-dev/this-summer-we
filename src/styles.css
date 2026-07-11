@@ -173,7 +173,7 @@ button:active:not(:disabled) {
   opacity: 0;
 }
 
-.season-toggle {
+.card-top-button.season-toggle {
   top: max(24px, env(safe-area-inset-top));
   left: 16px;
   z-index: 6;
@@ -219,12 +219,13 @@ button:active:not(:disabled) {
   left: 88px;
   z-index: 5;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: 0;
   width: 202px;
-  min-height: 56px;
-  padding: 6px 6px 5px 8px;
-  border-radius: 20px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 6px 0 8px;
+  border-radius: 22px;
   background: rgba(255, 255, 255, 0.96);
   filter: drop-shadow(0 7px 9px rgba(32, 90, 124, 0.15));
   animation: seasonSwitchIn 0.16s ease-out both;
@@ -258,11 +259,12 @@ button:active:not(:disabled) {
   z-index: 1;
   flex: 1 1 0;
   min-width: 0;
-  min-height: 58px;
-  margin: -7px 0 -6px;
-  padding: 2px 3px 3px;
-  border-radius: 48%;
+  height: 66px;
+  min-height: 66px;
+  padding: 7px 3px 6px;
+  border-radius: 50%;
   display: grid;
+  align-content: center;
   justify-items: center;
   gap: 2px;
   background: rgba(255, 255, 255, 0.96);
@@ -278,7 +280,7 @@ button:active:not(:disabled) {
 
 .season-name {
   position: relative;
-  padding-bottom: 4px;
+  padding-bottom: 7px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -288,13 +290,14 @@ button:active:not(:disabled) {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 0;
-  width: 0;
-  height: 2.5px;
+  bottom: -1px;
+  width: 6px;
+  height: 6px;
   border-radius: 999px;
   background: currentColor;
-  transform: translateX(-50%);
-  transition: width 0.18s ease;
+  opacity: 0;
+  transform: translateX(-50%) scale(0.45);
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .season-tab.is-active {
@@ -306,11 +309,12 @@ button:active:not(:disabled) {
 }
 
 .season-tab.is-active .season-name::after {
-  width: 100%;
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
 }
 
 @media (max-width: 359px) {
-  .season-toggle {
+  .card-top-button.season-toggle {
     left: 12px;
     width: 52px;
     height: 52px;
@@ -320,15 +324,16 @@ button:active:not(:disabled) {
     left: 80px;
     gap: 0;
     width: 178px;
-    min-height: 52px;
-    padding: 5px 4px 4px 6px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 4px 0 6px;
   }
 
   .season-tab {
     min-width: 0;
-    min-height: 54px;
-    margin: -6px 0 -5px;
-    padding: 2px 2px 4px;
+    height: 60px;
+    min-height: 60px;
+    padding: 6px 2px 5px;
   }
 
   .season-icon {
