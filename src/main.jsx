@@ -674,7 +674,17 @@ function HomeScreen({ isDrawing, isFading, hasCards, season, changeSeason, drawC
         aria-label={`季節を変える（いまは${SEASONS[season].label}）`}
         aria-expanded={isSeasonOpen}
       >
-        <SeasonIcon season={season} className="season-toggle-icon" />
+        {failedSeasonIcons[season] ? (
+          <SeasonIcon season={season} className="season-toggle-icon" />
+        ) : (
+          <img
+            className="season-toggle-img"
+            src={SEASONS[season].icon}
+            alt=""
+            aria-hidden="true"
+            onError={() => setFailedSeasonIcons((prev) => ({ ...prev, [season]: true }))}
+          />
+        )}
       </button>
       <button className="card-top-button card-history-button" onClick={openHistory} aria-label="履歴を見る">
         <History size={30} strokeWidth={2.1} />
