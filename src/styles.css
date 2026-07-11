@@ -219,13 +219,13 @@ button:active:not(:disabled) {
   left: 88px;
   z-index: 5;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 0;
   width: 202px;
-  height: 48px;
-  min-height: 48px;
-  padding: 0 6px 0 8px;
-  border-radius: 22px;
+  height: auto;
+  min-height: 56px;
+  padding: 6px 6px 5px 8px;
+  border-radius: 25px;
   background: rgba(255, 255, 255, 0.96);
   filter: drop-shadow(0 7px 9px rgba(32, 90, 124, 0.15));
   animation: seasonSwitchIn 0.16s ease-out both;
@@ -259,15 +259,15 @@ button:active:not(:disabled) {
   z-index: 1;
   flex: 1 1 0;
   min-width: 0;
-  height: 66px;
-  min-height: 66px;
-  padding: 7px 3px 6px;
-  border-radius: 50%;
+  height: auto;
+  min-height: 0;
+  padding: 2px 3px 3px;
+  border-radius: 16px;
   display: grid;
-  align-content: center;
+  align-content: normal;
   justify-items: center;
   gap: 2px;
-  background: rgba(255, 255, 255, 0.96);
+  background: transparent;
   color: #668ca7;
   line-height: 1;
 }
@@ -324,16 +324,16 @@ button:active:not(:disabled) {
     left: 80px;
     gap: 0;
     width: 178px;
-    height: 44px;
-    min-height: 44px;
-    padding: 0 4px 0 6px;
+    height: auto;
+    min-height: 52px;
+    padding: 5px 4px 4px 6px;
   }
 
   .season-tab {
     min-width: 0;
-    height: 60px;
-    min-height: 60px;
-    padding: 6px 2px 5px;
+    height: auto;
+    min-height: 0;
+    padding: 2px 2px 4px;
   }
 
   .season-icon {
