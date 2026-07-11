@@ -431,7 +431,7 @@ button:active:not(:disabled) {
 .home-actions .draw-button {
   min-height: clamp(68px, 8.5dvh, 82px);
   padding: 15px 28px;
-  border: 6px solid #fff;
+  border: 4.5px solid #fff;
   grid-template-columns: 48px minmax(0, 1fr) 30px;
   font-size: clamp(21px, 5.8vw, 25px);
   font-weight: 700;
@@ -490,15 +490,14 @@ button:active:not(:disabled) {
   justify-self: center;
   grid-template-columns: 38px minmax(0, 1fr) 24px;
   gap: 6px;
-  border: 4px solid #fff;
-  background: rgba(255, 255, 255, 0.66);
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.62);
   font-size: clamp(17px, 4.5vw, 19px);
   font-weight: 600;
   box-shadow:
-    0 8px 16px rgba(20, 74, 124, 0.16),
-    0 0 22px rgba(255, 255, 255, 0.9),
-    0 0 9px rgba(255, 255, 255, 0.85),
-    inset 0 0 10px rgba(255, 255, 255, 0.7);
+    0 8px 16px rgba(20, 74, 124, 0.14),
+    0 0 12px rgba(255, 255, 255, 0.55),
+    inset 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
 .home-actions .add-button .add-plus-icon {
@@ -514,10 +513,11 @@ button:active:not(:disabled) {
 .add-plus-icon {
   width: 34px;
   height: 34px;
-  padding: 5px;
+  padding: 4px;
   border-radius: 50%;
-  color: #fff;
-  background: var(--grad-primary);
+  color: var(--accent);
+  background: transparent;
+  border: 2.5px solid var(--accent);
 }
 
 .home-main-button span {
